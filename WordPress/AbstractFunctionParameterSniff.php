@@ -9,6 +9,7 @@
 
 namespace WordPressCS\WordPress;
 
+use PHP_CodeSniffer\Util\Tokens;
 use PHPCSUtils\Utils\PassedParameters;
 use WordPressCS\WordPress\AbstractFunctionRestrictionsSniff;
 
@@ -75,6 +76,49 @@ abstract class AbstractFunctionParameterSniff extends AbstractFunctionRestrictio
 		} else {
 			return $this->process_parameters( $stackPtr, $group_name, $matched_content, $parameters );
 		}
+	}
+
+	/**
+	 * Verify if the current token is a function call. Behaves like the parent method, except that
+	 * it also returns false if the function name is used in the context of a first class callable
+	 * or an import.
+	 *
+	 * @param int $stackPtr The position of the current token in the stack.
+	 *
+	 * @return bool
+	 */
+	public function is_targetted_token( $stackPtr ) {
+		$is_target_token = parent::is_targetted_token( $stackPtr );
+
+		if ( ! $is_target_token ) {
+			return false;
+		}
+
+		$ignore                   = Tokens::$emptyTokens;
+		$ignore[ \T_BITWISE_AND ] = \T_BITWISE_AND;
+		$prev                     = $this->phpcsFile->findPrevious( $ignore, ( $stackPtr - 1 ), null, true );
+		$next                     = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
+
+		// Function import.
+		if ( ( \T_STRING === $this->tokens[ $prev ]['code'] && 'function' === $this->tokens[ $prev ]['content'] )
+			&& ( \T_AS === $this->tokens[ $next ]['code'] || \T_SEMICOLON === $this->tokens[ $next ]['code'] )
+		) {
+			return false;
+		}
+
+		$nextNonEmpty = $this->phpcsFile->findNext(
+			Tokens::$emptyTokens,
+			( $next + 1 ),
+			null,
+			true
+		);
+
+		// First class callable.
+		if ( $nextNonEmpty && \T_ELLIPSIS === $this->tokens[ $nextNonEmpty ]['code'] ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
