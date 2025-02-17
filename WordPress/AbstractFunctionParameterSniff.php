@@ -106,16 +106,13 @@ abstract class AbstractFunctionParameterSniff extends AbstractFunctionRestrictio
 			return false;
 		}
 
-		$nextNonEmpty = $this->phpcsFile->findNext(
-			Tokens::$emptyTokens,
-			( $next + 1 ),
-			null,
-			true
-		);
-
 		// First class callable.
-		if ( $nextNonEmpty && \T_ELLIPSIS === $this->tokens[ $nextNonEmpty ]['code'] ) {
-			return false;
+		$firstNonEmpty = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $next + 1 ), null, true );
+		if ( $firstNonEmpty && \T_ELLIPSIS === $this->tokens[ $firstNonEmpty ]['code'] ) {
+			$secondNonEmpty = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $firstNonEmpty + 1 ), null, true );
+			if ( ! $secondNonEmpty || \T_CLOSE_PARENTHESIS === $this->tokens[ $secondNonEmpty ]['code'] ) {
+				return false;
+			}
 		}
 
 		return true;
