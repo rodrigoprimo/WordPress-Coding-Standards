@@ -88,9 +88,7 @@ abstract class AbstractFunctionParameterSniff extends AbstractFunctionRestrictio
 	 * @return bool
 	 */
 	public function is_targetted_token( $stackPtr ) {
-		$is_target_token = parent::is_targetted_token( $stackPtr );
-
-		if ( ! $is_target_token ) {
+		if ( ! parent::is_targetted_token( $stackPtr ) ) {
 			return false;
 		}
 
@@ -100,8 +98,9 @@ abstract class AbstractFunctionParameterSniff extends AbstractFunctionRestrictio
 		$next                     = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
 
 		// Function import.
-		if ( ( \T_STRING === $this->tokens[ $prev ]['code'] && 'function' === $this->tokens[ $prev ]['content'] )
-			&& ( \T_AS === $this->tokens[ $next ]['code'] || \T_SEMICOLON === $this->tokens[ $next ]['code'] )
+		if ( \T_STRING === $this->tokens[ $prev ]['code']
+			&& 'function' === $this->tokens[ $prev ]['content']
+			&& in_array( $this->tokens[ $next ]['code'], array( \T_AS, \T_SEMICOLON ), true )
 		) {
 			return false;
 		}
