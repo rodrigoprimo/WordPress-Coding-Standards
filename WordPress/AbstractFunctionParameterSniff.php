@@ -80,8 +80,8 @@ abstract class AbstractFunctionParameterSniff extends AbstractFunctionRestrictio
 
 	/**
 	 * Verify if the current token is a function call. Behaves like the parent method, except that
-	 * it also returns false if the function name is used in the context of a first class callable
-	 * or an import.
+	 * it returns false if there is no opening parenthesis after the function name (likely a
+	 * function import) or if it is a first class callable.
 	 *
 	 * @param int $stackPtr The position of the current token in the stack.
 	 *
@@ -92,16 +92,10 @@ abstract class AbstractFunctionParameterSniff extends AbstractFunctionRestrictio
 			return false;
 		}
 
-		$ignore                   = Tokens::$emptyTokens;
-		$ignore[ \T_BITWISE_AND ] = \T_BITWISE_AND;
-		$prev                     = $this->phpcsFile->findPrevious( $ignore, ( $stackPtr - 1 ), null, true );
-		$next                     = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
+		$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
 
-		// Function import.
-		if ( \T_STRING === $this->tokens[ $prev ]['code']
-			&& 'function' === $this->tokens[ $prev ]['content']
-			&& in_array( $this->tokens[ $next ]['code'], array( \T_AS, \T_SEMICOLON ), true )
-		) {
+		// Not a function call (likely a function import).
+		if ( \T_OPEN_PARENTHESIS !== $this->tokens[ $next ]['code'] ) {
 			return false;
 		}
 
