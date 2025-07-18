@@ -266,19 +266,33 @@ final class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSnif
 	 * @return void
 	 */
 	protected function process_parameter( $matched_content, $parameter, $parameter_args ) {
+		// Juliette told me to first check if the first token is a T_CONSTANT_ENCAPSED_STRING or an empty token.
+		// If it is not, we cannot determine the parameter value and the sniff should bow out. I ended up checkin
+		// if the first token is a comment token or T_CONSTANT_ENCAPSED_STRING. Am I missing something?
+		// Still, it is not clear to me why this check is necessary and why simply checking if $parameter['clean'] is empty
+		// is not enough.
 
-		$parameter_position = $this->phpcsFile->findNext(
-			Tokens::$emptyTokens,
+		$first_token = $this->phpcsFile->findNext(
+			T_WHITESPACE,
 			$parameter['start'],
 			$parameter['end'] + 1,
 			true
 		);
 
-		if ( false === $parameter_position ) {
+		$non_bailing_token_types = Tokens::$commentTokens + array( T_CONSTANT_ENCAPSED_STRING => true );
+
+		if ( false === $first_token
+			|| isset( $non_bailing_token_types[ $this->tokens[ $first_token ]['code'] ] ) === false
+		) {
+			// Live coding or first token is not a string or comment (i.e., a parameter value that the sniff cannot determine).
 			return;
 		}
 
-		$matched_parameter = TextStrings::stripQuotes( $this->tokens[ $parameter_position ]['content'] );
+		if ( empty( $parameter['clean'] ) ) {
+			return;
+		}
+
+		$matched_parameter = TextStrings::stripQuotes( $parameter['clean'] );
 		if ( ! isset( $parameter_args[ $matched_parameter ] ) ) {
 			return;
 		}
@@ -293,6 +307,13 @@ final class DeprecatedParameterValuesSniff extends AbstractFunctionParameterSnif
 			$message .= ' Use %s instead.';
 			$data[]   = $parameter_args[ $matched_parameter ]['alt'];
 		}
+
+		$parameter_position = $this->phpcsFile->findNext(
+			Tokens::$emptyTokens,
+			$parameter['start'],
+			$parameter['end'] + 1,
+			true
+		);
 
 		$is_error = $this->wp_version_compare( $parameter_args[ $matched_parameter ]['version'], $this->minimum_wp_version, '<' );
 		MessageHelper::addMessage(

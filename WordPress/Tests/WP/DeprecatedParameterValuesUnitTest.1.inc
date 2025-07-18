@@ -58,3 +58,6 @@ update_option(
 wp_get_typography_font_size_value( $preset, array() ); // OK.
 wp_get_typography_font_size_value( $preset, true ); // Error.
 wp_get_typography_font_size_value( $preset, false ); // Error.
+
+get_bloginfo( 'home' . 'url' );
+get_bloginfo( 'ho' . 'me' ); // Deprecated value, but the sniff cannot identify it due to the string concatenation.
