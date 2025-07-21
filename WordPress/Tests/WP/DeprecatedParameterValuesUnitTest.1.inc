@@ -48,7 +48,11 @@ get_option('comment_whitelist', $default);
 get_option(default: $default, option: 'comment_whitelist');
 update_option('blacklist_keys', $value);
 update_option('comment_whitelist', $value);
-update_option(autoload: true, value: $value, option: 'blacklist_keys');
+update_option(
+    autoload: true,
+    value: $value,
+    option: 'blacklist_keys'
+);
 
 // Passing boolean $settings is deprecated since WP 6.6.0.
 wp_get_typography_font_size_value( $preset, array() ); // OK.

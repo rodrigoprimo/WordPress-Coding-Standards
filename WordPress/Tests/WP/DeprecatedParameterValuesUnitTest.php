@@ -55,7 +55,7 @@ final class DeprecatedParameterValuesUnitTest extends AbstractSniffUnitTest {
 					48 => 1,
 					49 => 1,
 					50 => 1,
-					51 => 1,
+					54 => 1,
 				);
 
 			default:
@@ -74,8 +74,8 @@ final class DeprecatedParameterValuesUnitTest extends AbstractSniffUnitTest {
 		switch ( $testFile ) {
 			case 'DeprecatedParameterValuesUnitTest.1.inc':
 				return array(
-					55 => 1,
-					56 => 1,
+					59 => 1,
+					60 => 1,
 				);
 
 			default:
