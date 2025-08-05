@@ -70,7 +70,7 @@ jobs:
 
     name: PHP ${{ matrix.php }} on PHPCS ${{ matrix.dependencies }}
 
-    continue-on-error: ${{ matrix.php == '8.5' }}
+    continue-on-error: ${{ matrix.php == '8.5' || matrix.dependencies == 'phpcs-4-dev' }}
 
     steps:
       - name: Checkout repository
