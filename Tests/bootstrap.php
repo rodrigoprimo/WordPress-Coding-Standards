@@ -88,8 +88,5 @@ foreach ( $allStandards as $standard ) {
 
 $standardsToIgnoreString = implode( ',', $standardsToIgnore );
 
-// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv -- This is not production, but test code.
-putenv( "PHPCS_IGNORE_TESTS={$standardsToIgnoreString}" );
-
 // Clean up.
 unset( $ds, $phpcsDir, $composerPHPCSPath, $allStandards, $standardsToIgnore, $standard, $standardsToIgnoreString );
