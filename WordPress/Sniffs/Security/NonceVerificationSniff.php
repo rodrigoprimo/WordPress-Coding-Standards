@@ -215,7 +215,6 @@ class NonceVerificationSniff extends Sniff {
 		$in_nonce_check = ContextHelper::is_in_function_call( $this->phpcsFile, $stackPtr, $this->nonceVerificationFunctions );
 		if ( false !== $in_nonce_check ) {
 			// This *is* the nonce check, so bow out, but do store to cache.
-			// @todo Change to use arg unpacking once PHP < 5.6 has been dropped.
 			$this->set_cache( $cache_keys['file'], $cache_keys['start'], $cache_keys['end'], $in_nonce_check );
 			return false;
 		}
