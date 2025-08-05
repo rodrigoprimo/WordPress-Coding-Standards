@@ -18,14 +18,14 @@ if ( ! defined( 'PHP_CODESNIFFER_IN_TESTS' ) ) {
 	define( 'PHP_CODESNIFFER_IN_TESTS', true );
 }
 
-$ds = DIRECTORY_SEPARATOR;
+$dir_separator = DIRECTORY_SEPARATOR;
 
 /*
  * Load the necessary PHPCS files.
  */
 // Get the PHPCS dir from an environment variable.
 $phpcsDir          = getenv( 'PHPCS_DIR' );
-$composerPHPCSPath = dirname( __DIR__ ) . $ds . 'vendor' . $ds . 'squizlabs' . $ds . 'php_codesniffer';
+$composerPHPCSPath = dirname( __DIR__ ) . $dir_separator . 'vendor' . $dir_separator . 'squizlabs' . $dir_separator . 'php_codesniffer';
 
 if ( false === $phpcsDir && is_dir( $composerPHPCSPath ) ) {
 	// PHPCS installed via Composer.
@@ -40,11 +40,11 @@ if ( false === $phpcsDir && is_dir( $composerPHPCSPath ) ) {
 
 // Try and load the PHPCS autoloader.
 if ( false !== $phpcsDir
-	&& file_exists( $phpcsDir . $ds . 'autoload.php' )
-	&& file_exists( $phpcsDir . $ds . 'tests' . $ds . 'bootstrap.php' )
+	&& file_exists( $phpcsDir . $dir_separator . 'autoload.php' )
+	&& file_exists( $phpcsDir . $dir_separator . 'tests' . $dir_separator . 'bootstrap.php' )
 ) {
-	require_once $phpcsDir . $ds . 'autoload.php';
-	require_once $phpcsDir . $ds . 'tests' . $ds . 'bootstrap.php'; // PHPUnit 6.x+ support.
+	require_once $phpcsDir . $dir_separator . 'autoload.php';
+	require_once $phpcsDir . $dir_separator . 'tests' . $dir_separator . 'bootstrap.php'; // PHPUnit 6.x+ support.
 } else {
 	echo 'Uh oh... can\'t find PHPCS.
 
@@ -82,4 +82,4 @@ $standardsToIgnoreString = implode( ',', $standardsToIgnore );
 putenv( "PHPCS_IGNORE_TESTS={$standardsToIgnoreString}" );
 
 // Clean up.
-unset( $ds, $phpcsDir, $composerPHPCSPath, $allStandards, $standardsToIgnore, $standard, $standardsToIgnoreString );
+unset( $dir_separator, $phpcsDir, $composerPHPCSPath, $allStandards, $standardsToIgnore, $standard, $standardsToIgnoreString );
