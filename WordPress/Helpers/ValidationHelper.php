@@ -180,19 +180,19 @@ final class ValidationHelper {
 
 			switch ( self::$targets[ $tokens[ $i ]['code'] ] ) {
 				case 'construct':
-					$issetOpener = $phpcsFile->findNext( Tokens::$emptyTokens, ( $i + 1 ), null, true );
-					if ( false === $issetOpener
-						|| \T_OPEN_PARENTHESIS !== $tokens[ $issetOpener ]['code']
-						|| isset( $tokens[ $issetOpener ]['parenthesis_closer'] ) === false
+
+					if ( isset( $tokens[ $i ]['parenthesis_opener'] ) === false
+						|| isset( $tokens[ $i ]['parenthesis_closer'] ) === false
 					) {
 						// Parse error or live coding.
 						continue 2;
 					}
 
-					$issetCloser = $tokens[ $issetOpener ]['parenthesis_closer'];
+                    $constructOpener = $tokens[ $i ]['parenthesis_opener'];
+					$constructCloser = $tokens[ $i ]['parenthesis_closer'];
 
 					// Look for this variable. We purposely stomp $i from the parent loop.
-					for ( $i = ( $issetOpener + 1 ); $i < $issetCloser; $i++ ) {
+					for ( $i = ( $constructOpener + 1 ); $i < $constructCloser; $i++ ) {
 
 						if ( \T_VARIABLE !== $tokens[ $i ]['code'] ) {
 							continue;
