@@ -165,6 +165,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 		return array(
 			\T_VARIABLE,
 			\T_STRING,
+			\T_NAME_FULLY_QUALIFIED,
 		);
 	}
 
@@ -224,9 +225,16 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				}
 
 				// Detect a specific pattern for variable replacements in combination with `IN`.
-				if ( \T_STRING === $this->tokens[ $i ]['code'] ) {
+				if ( \T_STRING === $this->tokens[ $i ]['code']
+					|| \T_NAME_FULLY_QUALIFIED === $this->tokens[ $i ]['code']
+				) {
+					$content_lowercase = \strtolower( $this->tokens[ $i ]['content'] );
 
-					if ( 'sprintf' === strtolower( $this->tokens[ $i ]['content'] ) ) {
+					if ( \T_NAME_FULLY_QUALIFIED === $this->tokens[ $i ]['code'] ) {
+						$content_lowercase = \ltrim( $content_lowercase, '\\' );
+					}
+
+					if ( 'sprintf' === $content_lowercase ) {
 						$sprintf_parameters = PassedParameters::getParameters( $this->phpcsFile, $i );
 
 						if ( ! empty( $sprintf_parameters ) ) {
@@ -265,7 +273,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 						}
 						unset( $sprintf_parameters, $valid_sprintf, $last_param );
 
-					} elseif ( 'implode' === strtolower( $this->tokens[ $i ]['content'] ) ) {
+					} elseif ( 'implode' === $content_lowercase ) {
 						$ignore_tokens = Tokens::$emptyTokens + array(
 							\T_STRING_CONCAT => \T_STRING_CONCAT,
 							\T_NS_SEPARATOR  => \T_NS_SEPARATOR,
@@ -679,10 +687,17 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				$sprintf_param['end'],
 				true
 			);
+
 			if ( \T_STRING === $this->tokens[ $implode ]['code']
-				&& 'implode' === strtolower( $this->tokens[ $implode ]['content'] )
+				|| \T_NAME_FULLY_QUALIFIED === $this->tokens[ $implode ]['code']
 			) {
-				if ( $this->analyse_implode( $implode ) === true ) {
+				$content_lowercase = \strtolower( $this->tokens[ $implode ]['content'] );
+
+				if ( \T_NAME_FULLY_QUALIFIED === $this->tokens[ $implode ]['code'] ) {
+					$content_lowercase = \ltrim( $content_lowercase, '\\' );
+				}
+
+				if ( 'implode' === $content_lowercase && $this->analyse_implode( $implode ) === true ) {
 					++$found;
 				}
 			}
@@ -738,8 +753,18 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 		);
 
 		if ( \T_STRING !== $this->tokens[ $array_fill ]['code']
-			|| 'array_fill' !== strtolower( $this->tokens[ $array_fill ]['content'] )
+			&& \T_NAME_FULLY_QUALIFIED !== $this->tokens[ $array_fill ]['code']
 		) {
+			return false;
+		}
+
+		$content_lowercase = strtolower( $this->tokens[ $array_fill ]['content'] );
+
+		if ( \T_NAME_FULLY_QUALIFIED === $this->tokens[ $array_fill ]['code'] ) {
+			$content_lowercase = \ltrim( $content_lowercase, '\\' );
+		}
+
+		if ( 'array_fill' !== $content_lowercase ) {
 			return false;
 		}
 
