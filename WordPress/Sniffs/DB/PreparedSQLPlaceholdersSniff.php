@@ -166,6 +166,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 		return array(
 			\T_VARIABLE,
 			\T_STRING,
+			\T_NAME_FULLY_QUALIFIED,
 		);
 	}
 
@@ -225,7 +226,9 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				}
 
 				// Detect a specific pattern for variable replacements in combination with `IN`.
-				if ( \T_STRING === $this->tokens[ $i ]['code'] ) {
+				if ( \T_STRING === $this->tokens[ $i ]['code']
+					|| \T_NAME_FULLY_QUALIFIED === $this->tokens[ $i ]['code']
+				) {
 
 					if ( $this->is_global_function_call( $i, 'sprintf' ) ) {
 						$sprintf_parameters = PassedParameters::getParameters( $this->phpcsFile, $i );
@@ -775,11 +778,19 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 	 * @return bool True if it's a call to the global function, false otherwise.
 	 */
 	protected function is_global_function_call( $function_ptr, $function_name ) {
-		if ( \T_STRING !== $this->tokens[ $function_ptr ]['code'] ) {
+		if ( \T_STRING !== $this->tokens[ $function_ptr ]['code']
+			&& \T_NAME_FULLY_QUALIFIED !== $this->tokens[ $function_ptr ]['code']
+		) {
 			return false;
 		}
 
-		if ( strtolower( $this->tokens[ $function_ptr ]['content'] ) !== $function_name ) {
+		$content_lc = strtolower( $this->tokens[ $function_ptr ]['content'] );
+
+		if ( \T_NAME_FULLY_QUALIFIED === $this->tokens[ $function_ptr ]['code'] ) {
+			$content_lc = \ltrim( $content_lc, '\\' );
+		}
+
+		if ( $content_lc !== $function_name ) {
 			return false;
 		}
 
