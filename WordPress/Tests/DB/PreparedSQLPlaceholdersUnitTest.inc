@@ -518,3 +518,10 @@ $where = $wpdb->prepare(
  */
 $callback = $wpdb->prepare(...); // OK.
 
+/*
+ * Sniff is also triggered when calling WPDB methods statically.
+ */
+$sql = wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s", 1, "admin" ); // OK.
+$sql = WPDB::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" ); // Bad.
+$sql = \wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s", 1, "admin" ); // OK.
+$sql = \wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" ); // Bad.

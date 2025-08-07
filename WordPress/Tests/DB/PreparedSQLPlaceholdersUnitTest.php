@@ -107,6 +107,10 @@ final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 
 			// Named parameter support.
 			418 => 1,
+
+			// WPDB::prepare() static call.
+			525 => 1,
+			527 => 1,
 		);
 	}
 
