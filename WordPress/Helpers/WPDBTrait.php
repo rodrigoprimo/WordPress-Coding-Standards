@@ -53,9 +53,12 @@ trait WPDBTrait {
 			return false;
 		}
 
+		$contentLC = strtolower( $tokens[ $stackPtr ]['content'] );
+
 		// Check for wpdb.
 		if ( ( \T_VARIABLE === $tokens[ $stackPtr ]['code'] && '$wpdb' !== $tokens[ $stackPtr ]['content'] )
-			|| ( \T_STRING === $tokens[ $stackPtr ]['code'] && 'wpdb' !== strtolower( $tokens[ $stackPtr ]['content'] ) )
+			|| ( \T_STRING === $tokens[ $stackPtr ]['code'] && 'wpdb' !== $contentLC )
+			|| ( \T_NAME_FULLY_QUALIFIED === $tokens[ $stackPtr ]['code'] && '\wpdb' !== $contentLC )
 		) {
 			return false;
 		}
