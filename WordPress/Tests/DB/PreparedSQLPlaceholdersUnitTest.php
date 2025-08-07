@@ -17,6 +17,7 @@ use PHP_CodeSniffer\Tests\Standards\AbstractSniffTestCase;
  * @since 0.14.0
  *
  * @covers \WordPressCS\WordPress\Sniffs\DB\PreparedSQLPlaceholdersSniff
+ * @covers \WordPressCS\WordPress\Helpers\WPDBTrait::is_wpdb_method_call
  */
 final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 
