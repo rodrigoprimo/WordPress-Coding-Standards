@@ -9,6 +9,7 @@
 
 namespace WordPressCS\WordPress\Tests\Helpers\WPDBTrait;
 
+use PHPCSUtils\BackCompat\Helper;
 use PHPCSUtils\TestUtils\UtilityMethodTestCase;
 
 /**
@@ -189,6 +190,13 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 	 * @return array<string, array<string, bool|int|string|null>>
 	 */
 	public static function dataIsWpdbMethodCall() {
+		$isPhpcs3     = version_compare( Helper::getVersion(), '3.99.99', '<=' );
+		$tokenContent = null;
+
+		if ( $isPhpcs3 ) {
+			$tokenContent = 'wpdb';
+		}
+
 		return array(
 			// Cases that should return false.
 			'not_wpdb_variable' => array(
@@ -222,26 +230,26 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 			'partially_qualified' => array(
 				'testMarker'     => '/* testPartiallyQualified */',
 				'expectedResult' => false,
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'wpdb',
+				'tokenType'      => $isPhpcs3 ? \T_STRING : \T_NAME_QUALIFIED,
+				'tokenContent'   => $tokenContent,
 			),
 			'fully_qualified_namespaced' => array(
 				'testMarker'     => '/* testFullyQualifiedNamespaced */',
 				'expectedResult' => false,
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'wpdb',
+				'tokenType'      => $isPhpcs3 ? \T_STRING : \T_NAME_FULLY_QUALIFIED,
+				'tokenContent'   => $tokenContent,
 			),
 			'namespace_relative' => array(
 				'testMarker'     => '/* testNamespaceRelative */',
 				'expectedResult' => false,
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'wpdb',
+				'tokenType'      => $isPhpcs3 ? \T_STRING : \T_NAME_RELATIVE,
+				'tokenContent'   => $tokenContent,
 			),
 			'namespace_relative_sub' => array(
 				'testMarker'     => '/* testNamespaceRelativeSub */',
 				'expectedResult' => false,
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'wpdb',
+				'tokenType'      => $isPhpcs3 ? \T_STRING : \T_NAME_RELATIVE,
+				'tokenContent'   => $tokenContent,
 			),
 			'not_target_method' => array(
 				'testMarker'      => '/* testNotTargetMethod */',
@@ -263,6 +271,11 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 				'tokenContent'    => '$wpdb',
 				'hasMethodPtr'    => false,
 				'openParenMarker' => '/* testVariableMethodCallOpenParen */',
+			),
+			'not_string_or_variable' => array(
+				'testMarker'     => '/* testNotStringOrVariable */',
+				'expectedResult' => false,
+				'tokenType'      => \T_CLOSE_PARENTHESIS,
 			),
 
 			// Cases that should return true.
@@ -305,7 +318,7 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 			'fully_qualified_global_lowercase' => array(
 				'testMarker'      => '/* testFullyQualifiedGlobalLowercase */',
 				'expectedResult'  => true,
-				'tokenType'       => \T_STRING,
+				'tokenType'       => $isPhpcs3 ? \T_STRING : \T_NAME_FULLY_QUALIFIED,
 				'tokenContent'    => null,
 				'hasMethodPtr'    => true,
 				'openParenMarker' => '/* testFullyQualifiedGlobalLowercaseOpenParen */',
@@ -314,21 +327,10 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 			'fully_qualified_global_uppercase' => array(
 				'testMarker'      => '/* testFullyQualifiedGlobalUppercase */',
 				'expectedResult'  => true,
-				'tokenType'       => \T_STRING,
+				'tokenType'       => $isPhpcs3 ? \T_STRING : \T_NAME_FULLY_QUALIFIED,
 				'tokenContent'    => null,
 				'hasMethodPtr'    => true,
 				'openParenMarker' => '/* testFullyQualifiedGlobalUppercaseOpenParen */',
-				'hasEnd'          => true,
-			),
-
-			// False positive. See comment in the test case file.
-			'not_string_or_variable' => array(
-				'testMarker'      => '/* testNotStringOrVariable */',
-				'expectedResult'  => true,
-				'tokenType'       => \T_CLOSE_PARENTHESIS,
-				'tokenContent'    => null,
-				'hasMethodPtr'    => true,
-				'openParenMarker' => '/* testNotStringOrVariableOpenParen */',
 				'hasEnd'          => true,
 			),
 		);

@@ -33,6 +33,7 @@ MyNamespace\wpdb::esc_like /* testPartiallyQualifiedOpenParen */ ( $find );
 namespace\wpdb::esc_like /* testNamespaceRelativeOpenParen */ ( $find ); // The method should start recognizing this as a WPDB method call once it can resolve relative namespaces.
 /* testNamespaceRelativeSub */
 namespace\Sub\wpdb::esc_like /* testNamespaceRelativeSubOpenParen */ ( $find );
+my_function( /* testNotStringOrVariable */ )->prepare /* testNotStringOrVariableOpenParen */ ( 'SELECT * FROM table' );
 
 /*
  * The below should be recognized as a $wpdb method call.
@@ -50,10 +51,3 @@ wpdb::esc_like /* testUnqualifiedClassLowercaseOpenParen */ ( $find );
 \wpdb::esc_like /* testFullyQualifiedGlobalLowercaseOpenParen */ ( $find );
 /* testFullyQualifiedGlobalUppercase */
 \WPDB /* comment */ :: /* comment */ esc_like /* testFullyQualifiedGlobalUppercaseOpenParen */ ( $find );
-
-/*
- * The call below is currently a false positive. The method does not bail early when the token is not T_STRING or
- * T_VARIABLE, which causes it to return true for any token that happens to be followed by an object operator and a
- * target method call.
- */
-my_function( /* testNotStringOrVariable */ )->prepare /* testNotStringOrVariableOpenParen */ ( 'SELECT * FROM table' );
