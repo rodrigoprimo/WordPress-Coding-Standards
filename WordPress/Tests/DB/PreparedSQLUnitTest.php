@@ -10,6 +10,7 @@
 namespace WordPressCS\WordPress\Tests\DB;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffTestCase;
+use PHPCSUtils\BackCompat\Helper;
 
 /**
  * Unit test class for the PreparedSQL sniff.
@@ -32,6 +33,9 @@ final class PreparedSQLUnitTest extends AbstractSniffTestCase {
 	 * @return array<int, int> Key is the line number, value is the number of expected errors.
 	 */
 	public function getErrorList( $testFile = '' ) {
+		$phpcs_version = Helper::getVersion();
+		$is_phpcs_4    = version_compare( $phpcs_version, '3.99.99', '>' );
+
 		switch ( $testFile ) {
 			case 'PreparedSQLUnitTest.1.inc':
 				return array(
@@ -66,18 +70,18 @@ final class PreparedSQLUnitTest extends AbstractSniffTestCase {
 					128 => 1,
 					132 => 2,
 					152 => 1,
-					172 => 1,
-					173 => 1,
-					174 => 1,
+					172 => ( true === $is_phpcs_4 ? 2 : 1 ),
+					173 => ( true === $is_phpcs_4 ? 3 : 1 ),
+					174 => ( true === $is_phpcs_4 ? 2 : 1 ),
 					175 => 2,
-					184 => 1,
-					185 => 1,
-					186 => 1,
+					184 => ( true === $is_phpcs_4 ? 2 : 1 ),
+					185 => ( true === $is_phpcs_4 ? 2 : 1 ),
+					186 => ( true === $is_phpcs_4 ? 2 : 1 ),
 					187 => 2,
 					195 => 1,
 					196 => 1,
 					197 => 1,
-					198 => 2,
+					198 => ( true === $is_phpcs_4 ? 1 : 2 ),
 				);
 
 			case 'PreparedSQLUnitTest.2.inc':
