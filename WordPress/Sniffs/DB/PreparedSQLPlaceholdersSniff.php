@@ -166,6 +166,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 		return array(
 			\T_VARIABLE,
 			\T_STRING,
+			\T_NAME_FULLY_QUALIFIED,
 		);
 	}
 
@@ -225,7 +226,9 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				}
 
 				// Detect a specific pattern for variable replacements in combination with `IN`.
-				if ( \T_STRING === $this->tokens[ $i ]['code'] ) {
+				if ( \T_STRING === $this->tokens[ $i ]['code']
+					|| \T_NAME_FULLY_QUALIFIED === $this->tokens[ $i ]['code']
+				) {
 
 					if ( ContextHelper::is_global_function_call( $this->phpcsFile, $i, 'sprintf' ) ) {
 						$sprintf_parameters = PassedParameters::getParameters( $this->phpcsFile, $i );
