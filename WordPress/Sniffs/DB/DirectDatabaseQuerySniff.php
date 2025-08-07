@@ -235,6 +235,15 @@ final class DirectDatabaseQuerySniff extends Sniff {
 						continue;
 					}
 
+					// Skip if this is a non-global namespaced function call.
+					$prevNonEmpty = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $i - 1 ), null, true );
+					if ( \T_NS_SEPARATOR === $this->tokens[ $prevNonEmpty ]['code'] ) {
+						$prevPrevNonEmpty = $this->phpcsFile->findPrevious( Tokens::$emptyTokens, ( $prevNonEmpty - 1 ), null, true );
+						if ( \T_STRING === $this->tokens[ $prevPrevNonEmpty ]['code'] || \T_NAMESPACE === $this->tokens[ $prevPrevNonEmpty ]['code'] ) {
+							continue;
+						}
+					}
+
 					$content = strtolower( $this->tokens[ $i ]['content'] );
 
 					if ( isset( $this->cacheDeleteFunctions[ $content ] ) ) {

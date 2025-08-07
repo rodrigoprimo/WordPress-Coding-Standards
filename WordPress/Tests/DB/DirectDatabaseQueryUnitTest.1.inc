@@ -379,3 +379,47 @@ function methodNamesSameAsCacheFunctions() {
 
 	return $listofthings;
 }
+
+function fullyQualifiedCallsToCacheFunctions1() {
+    global $wpdb;
+
+    if ( ! ( $listofthings = \wp_cache_get( $foo ) ) ) {
+        $listofthings = $wpdb->get_col( 'SELECT something FROM somewhere WHERE someotherthing = 1' ); // Warning direct DB call.
+        \wp_cache_set( 'foo', $listofthings );
+    }
+
+    return $listofthings;
+}
+
+function fullyQualifiedCallsToCacheFunctions2() {
+	global $wpdb;
+
+	$wpdb->query( 'SELECT X FROM Y' ); // Warning direct DB call.
+	\wp_cache_delete( 'key', 'group' );
+}
+
+function callToNamespacedNonGlobalFunctions1() {
+	global $wpdb;
+
+	$listofthings = MyNamespace\wp_cache_get( $foo );
+	$listofthings = \MyNamespace\wp_cache_get( $foo );
+	$listofthings = namespace\wp_cache_get( $foo ); // The sniff should start considering this a valid WP cache function once it can resolve relative namespaces.
+
+	if ( ! $listofthings ) {
+		$listofthings = $wpdb->get_col( 'SELECT something FROM somewhere WHERE someotherthing = 1' ); // Warning x 2.
+		MyNamespace\wp_cache_set( 'foo', $listofthings );
+		\MyNamespace\wp_cache_set( 'foo', $listofthings );
+		namespace\wp_cache_set( 'foo', $listofthings ); // The sniff should start considering this a valid WP cache function once it can resolve relative namespaces.
+	}
+
+	return $listofthings;
+}
+
+function callToNamespacedNonGlobalFunctions2() {
+	global $wpdb;
+
+	$wpdb->query( 'SELECT X FROM Y' ); // Warning x 2.
+	MyNamespace\wp_cache_delete( 'key', 'group' );
+	\MyNamespace\wp_cache_delete( 'key', 'group' );
+	namespace\wp_cache_delete( 'key', 'group' ); // The sniff should start considering this a valid WP cache function once it can resolve relative namespaces.
+}
