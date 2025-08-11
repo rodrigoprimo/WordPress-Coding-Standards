@@ -69,6 +69,16 @@ final class PreparedSQLUnitTest extends AbstractSniffTestCase {
 					153 => 1,
 					154 => 1,
 					155 => 1,
+
+                    // phpcs:disable Squiz.PHP.CommentedOutCode.Found
+
+					/*
+					147 => 1,
+					148 => 1,
+					155 => 1,
+					160 => 1,
+					*/
+                    // phpcs:enable Squiz.PHP.CommentedOutCode.Found
 				);
 
 			case 'PreparedSQLUnitTest.2.inc':

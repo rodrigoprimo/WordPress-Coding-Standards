@@ -155,3 +155,19 @@ $wpdb->query( "SELECT * FROM $wpdb->posts WHERE ID = " . \MyNamespace\absint( $f
 $wpdb->query( "SELECT * FROM $wpdb->posts WHERE ID = " . namespace\absint( $foo ) ); // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
 
 // TODO: add similar namespace tests as the ones above for PreparedSQLSniff::$SQLAutoEscapedFunctions and FormattingFunctionsHelper::$formattingFunctions.
+
+/**
+$wpdb->query( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . namespace\esc_sql( $foo ) . "';" ); // TODO: should the sniff code be updated to handle this case? Currently it is an error, but it shouldn't as this is a call to the global esc_sql() function.
+$wpdb->query( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . \MyNamespace\esc_sql( $foo ) . "';" ); // Bad.
+
+$sql = $wpdb->prepare( namespace\sprintf(
+    'SELECT `post_id`, `meta_value` FROM `%s` WHERE `meta_key` = "sort_order" AND `post_id` IN (%s)',
+    $wpdb->postmeta,
+    implode( ',', array_fill( 0, count( $post_ids ), '%d' ) )
+), $post_ids ); // Bad, but maybe it shouldn't be (check TODO above).
+$sql = $wpdb->prepare( \MyNamespace\sprintf(
+    'SELECT `post_id`, `meta_value` FROM `%s` WHERE `meta_key` = "sort_order" AND `post_id` IN (%s)',
+    $wpdb->postmeta,
+    implode( ',', array_fill( 0, count( $post_ids ), '%d' ) )
+), $post_ids ); // Bad.
+*/
