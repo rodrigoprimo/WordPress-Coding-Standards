@@ -115,3 +115,6 @@ $anon = new readonly class {
 $anon = new readonly class() extends PDOStatement {}; // Error.
 
 $anon = new #[MyAttribute] readonly class {};
+
+echo namespace\DBlayer::VERSION; // Ok - resolves to \DBlayer.
+echo namespace\PDO::getAvailableDrivers(); // Bad - resolves to \PDO::getAvailableDrivers().
