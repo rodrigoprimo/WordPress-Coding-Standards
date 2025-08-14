@@ -95,3 +95,10 @@ wp_register_script( 'someScript-js', 'https://example.com/someScript.js' , array
 wp_register_script( 'someScript-js', 'https://example.com/someScript.js' , array( 'jquery' ), (double) 0, true ); // Error - 0, false or NULL are not allowed.
 
 wp_register_script( 'someScript-js', 'https://example.com/someScript.js' , array( 'jquery' ), (binary) 0, true ); // Error - 0, false or NULL are not allowed.
+
+/*
+// Safeguard handling of fully qualified true, false and null.
+wp_register_script( 'someScript-js', 'https://example.com/someScript.js' , array( 'jquery' ), \false, true ); // Error - 0, false or NULL are not allowed.
+wp_register_script( 'someScript-js', 'https://example.com/someScript.js' , array( 'jquery' ), \null, true ); // Error - 0, false or NULL are not allowed.
+wp_register_script( 'someScript-js', 'https://example.com/someScript.js' , array( 'jquery' ), \true, true ); // Ok.
+*/

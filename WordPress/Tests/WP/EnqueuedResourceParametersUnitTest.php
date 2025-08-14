@@ -47,6 +47,14 @@ final class EnqueuedResourceParametersUnitTest extends AbstractSniffTestCase {
 					92 => 1,
 					95 => 1,
 					97 => 1,
+
+                    // phpcs:disable Squiz.PHP.CommentedOutCode.Found
+
+					/*
+					101 => 1,
+					102 => 1,
+					*/
+                    // phpcs:enable Squiz.PHP.CommentedOutCode.Found
 				);
 
 			case 'EnqueuedResourceParametersUnitTest.2.inc':
