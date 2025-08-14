@@ -53,13 +53,15 @@
 			"@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf"
 		],
 		"run-tests-phpcs3": [
-			"@php ./vendor/phpunit/phpunit/phpunit --filter WordPress ./vendor/squizlabs/php_codesniffer/tests/AllTests.php --no-coverage"
+			"@php ./vendor/phpunit/phpunit/phpunit --filter WordPress ./vendor/squizlabs/php_codesniffer/tests/AllTests.php --no-coverage",
+            "@php ./vendor/phpunit/phpunit/phpunit WordPress/Util/Tests/ --no-coverage"
 		],
 		"run-tests-phpcs4": [
 			"@php ./vendor/phpunit/phpunit/phpunit --no-coverage"
 		],
 		"coverage-phpcs3": [
-			"@php ./vendor/phpunit/phpunit/phpunit --filter WordPress ./vendor/squizlabs/php_codesniffer/tests/AllTests.php"
+			"@php ./vendor/phpunit/phpunit/phpunit --filter WordPress ./vendor/squizlabs/php_codesniffer/tests/AllTests.php",
+            "@php ./vendor/phpunit/phpunit/phpunit WordPress/Util/Tests/"
 		],
 		"coverage-phpcs4": [
 			"@php ./vendor/phpunit/phpunit/phpunit"
