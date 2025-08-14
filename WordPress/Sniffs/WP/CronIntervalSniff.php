@@ -233,7 +233,13 @@ final class CronIntervalSniff extends Sniff {
 							continue;
 						}
 
-						$value .= $this->tokens[ $j ]['content'];
+						$content = $this->tokens[ $j ]['content'];
+
+						if ( \T_NAME_FULLY_QUALIFIED === $this->tokens[ $j ]['code'] ) {
+							$content = \ltrim( $content, '\\' );
+						}
+
+						$value .= $content;
 					}
 
 					if ( $parentheses_count > 0 ) {
