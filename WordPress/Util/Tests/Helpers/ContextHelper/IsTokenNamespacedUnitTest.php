@@ -9,6 +9,7 @@
 
 namespace WordPressCS\WordPress\Util\Tests\Helpers\ContextHelper;
 
+use PHPCSUtils\BackCompat\Helper;
 use PHPCSUtils\Tokens\Collections;
 use WordPressCS\WordPress\Helpers\ContextHelper;
 use PHPCSUtils\TestUtils\UtilityMethodTestCase;
@@ -53,13 +54,15 @@ final class IsTokenNamespacedUnitTest extends UtilityMethodTestCase {
 	 * @see testIsTokenNamespacedShouldReturnFalse()
 	 */
 	public static function dataIsTokenNamespacedShouldReturnFalse() {
+		$isPhpcs3 = version_compare( Helper::getVersion(), '3.99.99', '<=' );
+
 		return array(
 			array( '/* test return false 1 */', 'my_function' ),
-			array( '/* test return false 2 */', 'my_function' ),
+			array( '/* test return false 2 */', ( $isPhpcs3 ? 'my_function' : '\my_function' ) ),
 			array( '/* test return false 3 */', 'MyClass' ),
-			array( '/* test return false 4 */', 'MyClass' ),
+			array( '/* test return false 4 */', ( $isPhpcs3 ? 'MyClass' : '\MyClass' ) ),
 			array( '/* test return false 5 */', 'MY_CONSTANT' ),
-			array( '/* test return false 6 */', 'MY_CONSTANT' ),
+			array( '/* test return false 6 */', ( $isPhpcs3 ? 'MY_CONSTANT' : '\MY_CONSTANT' ) ),
 		);
 	}
 
@@ -85,12 +88,14 @@ final class IsTokenNamespacedUnitTest extends UtilityMethodTestCase {
 	 * @see testIsTokenNamespacedShouldReturnTrue()
 	 */
 	public static function dataIsTokenNamespacedShouldReturnTrue() {
+		$isPhpcs3 = version_compare( Helper::getVersion(), '3.99.99', '<=' );
+
 		return array(
-			array( '/* test return true 1 */', 'my_function' ),
-			array( '/* test return true 2 */', 'my_function' ),
-			array( '/* test return true 3 */', 'my_function' ),
-			array( '/* test return true 4 */', 'MyClass' ),
-			array( '/* test return true 5 */', 'MY_CONSTANT' ),
+			array( '/* test return true 1 */', ( $isPhpcs3 ? 'my_function' : 'MyNamespace\my_function' ) ),
+			array( '/* test return true 2 */', ( $isPhpcs3 ? 'my_function' : '\MyNamespace\my_function' ) ),
+			array( '/* test return true 3 */', ( $isPhpcs3 ? 'my_function' : 'namespace\my_function' ) ),
+			array( '/* test return true 4 */', ( $isPhpcs3 ? 'MyClass' : 'MyNamespace\MyClass' ) ),
+			array( '/* test return true 5 */', ( $isPhpcs3 ? 'MY_CONSTANT' : 'MyNamespace\MY_CONSTANT' ) ),
 		);
 	}
 }
