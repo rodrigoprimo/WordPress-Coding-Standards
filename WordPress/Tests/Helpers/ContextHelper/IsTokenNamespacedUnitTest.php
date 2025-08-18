@@ -9,6 +9,7 @@
 
 namespace WordPressCS\WordPress\Tests\Helpers\ContextHelper;
 
+use PHPCSUtils\BackCompat\Helper;
 use PHPCSUtils\Tokens\Collections;
 use WordPressCS\WordPress\Helpers\ContextHelper;
 use PHPCSUtils\TestUtils\UtilityMethodTestCase;
@@ -56,6 +57,8 @@ final class IsTokenNamespacedUnitTest extends UtilityMethodTestCase {
 	 * @see testIsTokenNamespaced()
 	 */
 	public static function dataIsTokenNamespaced() {
+		$isPhpcs3 = version_compare( Helper::getVersion(), '3.99.99', '<=' );
+
 		return array(
 			'unqualified_function' => array(
 				'testMarker'     => '/* testUnqualifiedFunction */',
@@ -65,7 +68,7 @@ final class IsTokenNamespacedUnitTest extends UtilityMethodTestCase {
 			'fully_qualified_function' => array(
 				'testMarker'     => '/* testFullyQualifiedFunction */',
 				'expectedResult' => false,
-				'tokenContent'   => 'my_function',
+				'tokenContent'   => ( $isPhpcs3 ? 'my_function' : '\my_function' ),
 			),
 			'unqualified_class' => array(
 				'testMarker'     => '/* testUnqualifiedClass */',
@@ -75,7 +78,7 @@ final class IsTokenNamespacedUnitTest extends UtilityMethodTestCase {
 			'fully_qualified_class' => array(
 				'testMarker'     => '/* testFullyQualifiedClass */',
 				'expectedResult' => false,
-				'tokenContent'   => 'MyClass',
+				'tokenContent'   => ( $isPhpcs3 ? 'MyClass' : '\MyClass' ),
 			),
 			'unqualified_constant' => array(
 				'testMarker'     => '/* testUnqualifiedConstant */',
@@ -85,32 +88,32 @@ final class IsTokenNamespacedUnitTest extends UtilityMethodTestCase {
 			'fully_qualified_constant' => array(
 				'testMarker'     => '/* testFullyQualifiedConstant */',
 				'expectedResult' => false,
-				'tokenContent'   => 'MY_CONSTANT',
+				'tokenContent'   => ( $isPhpcs3 ? 'MY_CONSTANT' : '\MY_CONSTANT' ),
 			),
 			'partially_qualified_function' => array(
 				'testMarker'     => '/* testPartiallyQualifiedFunction */',
 				'expectedResult' => true,
-				'tokenContent'   => 'my_function',
+				'tokenContent'   => ( $isPhpcs3 ? 'my_function' : 'MyNamespace\my_function' ),
 			),
 			'fully_qualified_namespaced_function' => array(
 				'testMarker'     => '/* testFullyQualifiedNamespacedFunction */',
 				'expectedResult' => true,
-				'tokenContent'   => 'my_function',
+				'tokenContent'   => ( $isPhpcs3 ? 'my_function' : '\MyNamespace\my_function' ),
 			),
 			'namespace_relative_function' => array(
 				'testMarker'     => '/* testNamespaceRelativeFunction */',
 				'expectedResult' => true,
-				'tokenContent'   => 'my_function',
+				'tokenContent'   => ( $isPhpcs3 ? 'my_function' : 'namespace\my_function' ),
 			),
 			'partially_qualified_class' => array(
 				'testMarker'     => '/* testPartiallyQualifiedClass */',
 				'expectedResult' => true,
-				'tokenContent'   => 'MyClass',
+				'tokenContent'   => ( $isPhpcs3 ? 'MyClass' : 'MyNamespace\MyClass' ),
 			),
 			'partially_qualified_constant' => array(
 				'testMarker'     => '/* testPartiallyQualifiedConstant */',
 				'expectedResult' => true,
-				'tokenContent'   => 'MY_CONSTANT',
+				'tokenContent'   => ( $isPhpcs3 ? 'MY_CONSTANT' : 'MyNamespace\MY_CONSTANT' ),
 			),
 		);
 	}
