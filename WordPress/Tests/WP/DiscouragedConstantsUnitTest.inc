@@ -102,3 +102,9 @@ enum ContainsConst {
 }
 
 echo HEADER_TEXTCOLOR::$var; // OK.
+
+// Safeguard that namespaced calls are handled correctly.
+\define( 'STYLESHEETPATH', 'something' ); // Bad.
+\MyNamespace\define( 'STYLESHEETPATH', 'something' ); // Ok.
+MyNamespace\define( 'STYLESHEETPATH', 'something' ); // Ok.
+namespace\define( 'STYLESHEETPATH', 'something' ); // Ok.
