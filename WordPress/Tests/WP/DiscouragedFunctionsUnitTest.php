@@ -19,7 +19,6 @@ use PHP_CodeSniffer\Tests\Standards\AbstractSniffTestCase;
  *
  * @covers \WordPressCS\WordPress\AbstractFunctionRestrictionsSniff
  * @covers \WordPressCS\WordPress\Helpers\ContextHelper::has_object_operator_before
- * @covers \WordPressCS\WordPress\Helpers\ContextHelper::is_token_namespaced
  * @covers \WordPressCS\WordPress\Sniffs\WP\DiscouragedFunctionsSniff
  */
 final class DiscouragedFunctionsUnitTest extends AbstractSniffTestCase {
