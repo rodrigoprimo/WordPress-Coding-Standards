@@ -287,5 +287,13 @@ __ (
     'something-else'
 );
 
+/*
+ * Safeguard correct handling of namespaced function calls (partially qualified is already tested above).
+ */
+\MyNamespace\load_textdomain( 'text-domain', '/path/to/file.mo' );
+namespace\load_textdomain( 'text-domain', '/path/to/file.mo' );
+\load_textdomain( 'something-else', '/path/to/file.mo' );
+\load_textdomain( 'something-else' );
+
 // phpcs:set WordPress.Utils.I18nTextDomainFixer old_text_domain[]
 // phpcs:set WordPress.Utils.I18nTextDomainFixer new_text_domain false
