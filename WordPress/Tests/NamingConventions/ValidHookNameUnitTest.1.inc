@@ -121,3 +121,11 @@ do_action( 'admin_head_' .  $fn( 'UPPERCASE', 'wrong-delimiter' ) . '_action' );
 do_action_ref_array( hook: 'My-Hook', args: $args ); // OK. Well, not really, but using the wrong parameter name, so not our concern.
 do_action_ref_array( args: $args, hook_name: 'my_hook', ); // OK.
 do_action_ref_array( args: $args, hook_name: 'My-Hook', ); // Error - use lowercase + warning about dash.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+do_action( 'admin_head_' .  \my_function('UPPERCASE') . '_action' ); // Ok.
+do_action( 'admin_head_' .  MyNamespace\my_function('UPPERCASE') . '_action' ); // Ok.
+do_action( 'admin_head_' .  \MyNamespace\my_function('UPPERCASE') . '_action' ); // Ok.
+do_action( 'admin_head_' .  namespace\my_function('UPPERCASE') . '_action' ); // Ok.
