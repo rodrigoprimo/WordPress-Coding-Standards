@@ -117,7 +117,7 @@ $wpdb
 $wpdb?->query( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . (int) $foo . "';" ); // OK.
 $wpdb?->query( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" ); // Bad.
 
-WPDB::prepare( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" ); // Bad.
+\WPDB::prepare( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" ); // Bad.
 $wpdb->Query( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" ); // Bad.
 
 $wpdb->query( "SELECT * FROM $wpdb->posts WHERE value = " . {$foo} . ";" ); // Bad - on $foo, not on the {}.
@@ -142,3 +142,16 @@ echo $wpdb::CONSTANT_NAME;
 
 // Not an identifiable method call.
 $wpdb->{$methodName}('query');
+
+// TODO: the below currently is flagged but it shouldn't be.
+/*
+MyNamespace\WPDB::prepare( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" );
+\MyNamespace\WPDB::prepare( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" );
+namespace\WPDB::prepare( "SELECT * FROM $wpdb->posts WHERE post_title LIKE '" . foo() . "';" ); // This should be flagged in the future once the sniff is able to resolve relative namespaces.
+*/
+
+$wpdb->query( "SELECT * FROM $wpdb->posts WHERE ID = " . MyNamespace\absint( $foo ) );
+$wpdb->query( "SELECT * FROM $wpdb->posts WHERE ID = " . \MyNamespace\absint( $foo ) );
+$wpdb->query( "SELECT * FROM $wpdb->posts WHERE ID = " . namespace\absint( $foo ) ); // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+
+// TODO: add similar namespace tests as the ones above for PreparedSQLSniff::$SQLAutoEscapedFunctions and FormattingFunctionsHelper::$formattingFunctions.
