@@ -84,3 +84,10 @@ $decoded = @hex2bin( $data );
 // phpcs:set WordPress.PHP.NoSilencedErrors context_length 0
 echo @some_userland_function( $param ); // Bad.
 // phpcs:set WordPress.PHP.NoSilencedErrors context_length 6
+
+/*
+ * More tests safeguarding support for PHP 8.0+ tokenization of namespaced "names".
+ */
+$file = @MyNS\MyClass::file_get_contents( $file ); // Bad.
+$file = @namespace\MyNS\MyClass::file_get_contents( $file ); // Bad.
+$file = @namespace\file_get_contents( $file ); // Bad for now as the sniff doesn't resolve relative namespaces.
