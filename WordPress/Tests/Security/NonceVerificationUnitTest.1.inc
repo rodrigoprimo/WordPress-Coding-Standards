@@ -524,3 +524,21 @@ function different_function_name() {
     update_post_meta( (int) $_POST['id'], 'a_key', $_POST['a_value'] );
 }
 // phpcs:set WordPress.Security.NonceVerification customNonceVerificationFunctions[]
+
+function test_fully_qualified_call_to_global_nonce_verification_function() {
+    if ( ! is_numeric ( $_POST['foo'] ) ) {
+        return;
+    }
+
+    \wp_verify_nonce( 'some_action' ); // OK.
+}
+
+function test_namespaced_calls_to_incorrect_functions() {
+    if ( ! is_numeric ( $_POST['foo'] ) ) {
+        return;
+    }
+
+    MyNamespace\wp_verify_nonce( 'some_action' ); // Bad.
+    \MyNamespace\wp_verify_nonce( 'some_action' ); // Bad.
+    namespace\wp_verify_nonce( 'some_action' ); // Bad, but should become ok once the sniff is able to resolve relative namespaces.
+}
