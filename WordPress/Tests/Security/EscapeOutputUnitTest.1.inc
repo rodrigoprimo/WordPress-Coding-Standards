@@ -258,7 +258,7 @@ echo esc_html_x( $some_nasty_var, 'context' ); // Ok.
 	<input type="hidden" name="some-action" value="<?php echo esc_attr_x( 'none', 'context' ); ?>" /><!-- OK. -->
 <?php
 
-echo PHP_VERSION_ID, PHP_VERSION, PHP_EOL, PHP_EXTRA_VERSION; // OK.
+echo PHP_VERSION_ID, PHP_VERSION, \PHP_EOL, PHP_EXTRA_VERSION; // OK.
 
 trigger_error( 'DEBUG INFO - ' . __METHOD__ . '::internal_domains: domain = ' . $domain ); // Bad.
 Trigger_ERROR( $domain ); // Bad.
@@ -661,7 +661,7 @@ exit( status: esc_html( $foo ) ); // Ok.
 die( status: esc_html( $foo ) ); // Ok.
 
 exit( status: $foo ); // Bad.
-die( status: $foo ); // Bad.
+\die( status: $foo ); // Bad.
 
 /*
  * Issue https://github.com/WordPress/WordPress-Coding-Standards/issues/2552
@@ -687,3 +687,58 @@ _deprecated_function( __METHOD__, 'x.x.x', \ClassName::class ); // OK.
 die( \MyNamespace\ClassName::class . ' has been abandoned' ); // OK.
 echo 'Do not use ' . MyNamespace\ClassName::class; // OK.
 _deprecated_function( __METHOD__, 'x.x.x', namespace\ClassName::class ); // OK.
+
+/*
+ * Safeguard correct handling of all types of namespaced escaping and printing function calls.
+ */
+\printf( 'Hello %s', $foo ); // Bad.
+MyNamespace\printf( 'Hello %s', $foo ); // Ok.
+\MyNamespace\printf( 'Hello %s', $foo ); // Ok.
+namespace\printf( 'Hello %s', $foo ); // Ok.
+\printf( 'Hello %s', \esc_html( $foo ) ); // Ok.
+\printf( 'Hello %s', MyNamespace\esc_html( $foo ) ); // Bad.
+\printf( 'Hello %s', \MyNamespace\esc_html( $foo ) ); // Bad.
+\printf( 'Hello %s', namespace\esc_html( $foo ) ); // Bad.
+
+/*
+ * Safeguard correct handling of namespaced auto-escaped functions.
+ */
+echo \bloginfo( $var ); // Ok.
+echo MyNamespace\bloginfo( $var ); // Bad.
+echo \MyNamespace\bloginfo( $var ); // Bad.
+echo namespace\bloginfo( $var ); // Bad.
+
+/*
+ * Safeguard correct handling of namespaced unsafe printing functions.
+ */
+\_e( $text, 'my-domain' ); // Bad.
+MyNamespace\_e( $text, 'my-domain' ); // Ok.
+\MyNamespace\_e( $text, 'my-domain' ); // Ok.
+namespace\_e( $text, 'my-domain' ); // Ok.
+
+/*
+ * Safeguard correct handling of namespaced formatting functions.
+ */
+echo \sprintf( '%s', $var ); // Bad.
+echo \sprintf( '%s', esc_html( $var ) ); // Ok.
+echo MyNamespace\sprintf( '%s', esc_html( $var ) ); // Bad.
+echo \MyNamespace\sprintf( '%s', esc_html( $var ) ); // Bad.
+echo namespace\sprintf( '%s', esc_html( $var ) ); // Bad.
+
+/*
+ * Safeguard correct handling of get_search_query() as the sniff has special logic to check the $escaped parameter.
+ */
+echo \get_search_query( true ); // Ok.
+echo \get_search_query( false ); // Bad.
+echo MyNamespace\get_search_query( true ); // Bad.
+echo \MyNamespace\get_search_query( true ); // Bad.
+echo namespace\get_search_query( true ); // Bad.
+
+/*
+ * Safeguard correct handling of fully qualified functions with special parameter handling.
+ * These should still be recognized as WordPress functions and use their special logic.
+ */
+\trigger_error( 'This is fine' ); // Ok.
+\trigger_error( error_level: E_USER_NOTICE ); // Ok from the sniff perspective (required $message parameter missing, but that's not our concern)
+\trigger_error( esc_html( $message ) ); // Ok.
+\trigger_error( $message ); // Bad.
