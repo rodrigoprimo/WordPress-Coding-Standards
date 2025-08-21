@@ -107,6 +107,10 @@ final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 
 			// Named parameter support.
 			418 => 1,
+
+			// Fully qualified \WPDB::prepare() call.
+			527 => 1,
+			528 => 1,
 		);
 	}
 
@@ -162,6 +166,24 @@ final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 			482 => 1,
 			490 => 1,
 			498 => 1,
+
+			// Namespaced sprintf/implode/array_fill calls.
+			538 => 1,
+			545 => 1,
+			552 => 1,
+			559 => 1,
+			571 => 1,
+			578 => 1,
+			585 => 1,
+			592 => 1,
+			604 => 1,
+			610 => 1,
+			616 => 1,
+			622 => 1,
+			633 => 1,
+			639 => 1,
+			644 => 1,
+			650 => 1,
 		);
 	}
 }

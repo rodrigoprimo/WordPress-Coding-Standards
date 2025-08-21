@@ -14,7 +14,7 @@ $sql = $wpdb->prepare( 'SELECT * FROM `table` WHERE id = ' . $id ); // OK - this
 $sql = $wpdb->prepare( "SELECT * FROM `table` WHERE id = $id" ); // OK - this will be handled by the PreparedSQL sniff.
 $sql = $wpdb->prepare( "SELECT * FROM `table` WHERE id = {$id['some%sing']}" ); // OK - this will be handled by the PreparedSQL sniff.
 $sql = $wpdb?->prepare( 'SELECT * FROM ' . $wpdb->users ); // Warning.
-$sql = $wpdb->prepare( "SELECT * FROM `{$wpdb->users}`" );  // Warning.
+$sql = $wpdb->PREPARE( "SELECT * FROM `{$wpdb->users}`" );  // Warning.
 $sql = $wpdb->prepare( "SELECT * FROM `{$wpdb->users}` WHERE id = $id" ); // OK - this will be handled by the PreparedSQL sniff.
 
 /*
@@ -80,7 +80,7 @@ $where = $wpdb->prepare(
 ); // OK.
 
 $where = $wpdb->prepare(
-	sprintf(
+	\sprintf(
 		"{$wpdb->posts}.post_type IN (%s)
 		AND {$wpdb->posts}.post_status IN (%s)",
 		implode( ',', array_fill( 0, count($post_types), '%s' ), ),
@@ -99,7 +99,7 @@ $where = $wpdb->prepare(
 ); // OK.
 
 $query = $wpdb->prepare(
-	sprintf(
+	Sprintf(
 		'SELECT COUNT(ID)
 		  FROM `%s`
 		 WHERE ID IN (%s)
@@ -124,7 +124,7 @@ $results = $wpdb->get_results(
 ); // OK.
 
 $query = $wpdb->prepare(
-	sprintf(
+	\SPRINTF(
 		'SELECT COUNT(ID)
 		  FROM `%s`
 		 WHERE ID in (%s)
@@ -382,7 +382,7 @@ $where = $wpdb->prepare(
 $where = $wpdb->prepare(
 	sprintf(
 		"{$wpdb->posts}.post_type IN (%s)",
-		\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		\ImplodE( ',', array_fill( 0, count($post_types), '%s' ) )
 	),
 	$post_types
 ); // OK.
@@ -397,7 +397,7 @@ $where = $wpdb->prepare(
 
 $where = $wpdb->prepare(
 	"{$wpdb->posts}.post_type IN ("
-		. implode( ',', \array_fill( 0, count($post_types), '%s' ) )
+		. implode( ',', \Array_Fill( 0, count($post_types), '%s' ) )
 		. ") AND {$wpdb->posts}.post_status IN ("
 		. implode( ',', \array_fill( 0, count($post_statusses), '%s' ) )
 		. ')',
@@ -518,3 +518,138 @@ $where = $wpdb->prepare(
  */
 $callback = $wpdb->prepare(...); // OK.
 
+/*
+ * Safeguard correct handling of all types of namespaced calls to the wpdb::prepare() method.
+ *
+ * Note that calling wpdb::prepare() statically will result in an error. Still, the tests are included here since the
+ * sniff handles those calls.
+ */
+$sql = \wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
+$sql = \WPDB::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
+$sql = MyNamespace\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
+$sql = \MyNamespace\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
+$sql = namespace\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" ); // The sniff should start flagging this once it can resolve relative namespaces.
+$sql = namespace\Sub\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
+
+/*
+ * Safeguard correct handling of namespaced implode() calls when nested as a parameter to sprintf() (except fully
+ * qualified calls to the global implode() function, which is already handled above).
+ */
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		MyNamespace\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		\MyNamespace\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare( // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		namespace\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		namespace\Sub\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+
+/*
+ * Safeguard correct handling of namespaced array_fill() calls when nested inside sprintf() (except fully qualified
+ * calls to the global array_fill() function, which is already handled above).
+ */
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', MyNamespace\array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', \MyNamespace\array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare( // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', namespace\array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', namespace\Sub\array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+
+/*
+ * Safeguard correct handling of namespaced implode() calls in direct string concatenation (when NOT nested inside
+ * sprintf()). Fully qualified calls to the global implode() are already handled above.
+ */
+$where = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. MyNamespace\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. \MyNamespace\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare( // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. namespace\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. namespace\Sub\implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+
+/*
+ * Safeguard correct handling of namespaced array_fill() calls in direct string concatenation (when NOT nested inside
+ * sprintf()). Fully qualified calls to the global implode() are already handled above.
+ */
+$where = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. implode( ',', MyNamespace\array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. implode( ',', \MyNamespace\array_fill( 0, count($post_types), '%s' ) ) . ')',
+	'publish'
+);
+$where = $wpdb->prepare( // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. implode( ',', namespace\array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"SELECT * FROM {$wpdb->posts} WHERE post_status = %s AND post_type IN ("
+		. implode( ',', namespace\Sub\array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
