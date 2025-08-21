@@ -165,7 +165,7 @@ add_filter( 'cron_schedules', function ( $schedules ) {
 class FQNConstants {
 	public function add_schedules() {
 		add_filter( 'cron_schedules', array( $this, 'add_weekly_schedule' ) ); // Ok: > 15 min.
-		add_filter( 'cron_schedules', array( $this, 'add_eight_minute_schedule' ) ); // Warning: 8 min.
+		\add_filter( 'cron_schedules', array( $this, 'add_eight_minute_schedule' ) ); // Warning: 8 min.
 		add_filter( 'cron_schedules', array( $this, 'add_hundred_minute_schedule' ) ); // Warning: time undetermined.
 		add_filter( 'cron_schedules', array( $this, 'sneaky_fake_wp_constant_schedule' ) ); // Warning: time undetermined.
 	}
@@ -326,3 +326,11 @@ function first_class_six_min_schedule( $schedules ) {
 }
 add_filter( 'cron_schedules', first_class_six_min_schedule(...)); // Warning: 6 min.
 add_filter( 'cron_schedules', 'first_class_six_min_schedule'(...)); // Warning: 6 min.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls (except FQN global function call which is
+ * handled above).
+ */
+MyNamespace\add_filter( 'cron_schedules', 'unknown_callback' ); // Ok.
+\MyNamespace\add_filter( 'cron_schedules', 'unknown_callback' ); // Ok.
+namespace\add_filter( 'cron_schedules', 'unknown_callback' ); // Ok, but should trigger an error once this sniff is able to resolve relative namespaces.
