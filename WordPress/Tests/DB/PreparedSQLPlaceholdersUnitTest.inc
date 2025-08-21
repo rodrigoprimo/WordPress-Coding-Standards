@@ -80,7 +80,7 @@ $where = $wpdb->prepare(
 ); // OK.
 
 $where = $wpdb->prepare(
-	sprintf(
+	\sprintf(
 		"{$wpdb->posts}.post_type IN (%s)
 		AND {$wpdb->posts}.post_status IN (%s)",
 		implode( ',', array_fill( 0, count($post_types), '%s' ), ),
@@ -525,3 +525,7 @@ $sql = wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login =
 $sql = WPDB::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" ); // Bad.
 $sql = \wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s", 1, "admin" ); // OK.
 $sql = \wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" ); // Bad.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
