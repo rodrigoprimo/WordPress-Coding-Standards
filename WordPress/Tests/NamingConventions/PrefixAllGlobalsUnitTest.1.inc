@@ -683,4 +683,12 @@ class Acronym_AsymmetricVisibilityProperties {
     public function __construct(public protected(set) int $foo = 0) {} // Ok.
 }
 
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\define('SOME_GLOBAL', [ 1, 2, 3 ]); // Bad.
+MyNamespace\define('SOME_GLOBAL', [ 1, 2, 3 ]); // Ok.
+\MyNamespace\define('SOME_GLOBAL', [ 1, 2, 3 ]); // Ok.
+namespace\define('SOME_GLOBAL', [ 1, 2, 3 ]); // Ok.
+
 // phpcs:set WordPress.NamingConventions.PrefixAllGlobals prefixes[]
