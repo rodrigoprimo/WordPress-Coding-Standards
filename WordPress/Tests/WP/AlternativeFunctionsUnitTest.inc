@@ -43,13 +43,13 @@ file_get_contents( 'php://input' ); // OK.
 // Loosely related to issue 295.
 file_get_contents( 'php://stdin' ); // OK.
 $input_stream = fopen( 'php://stdin', 'w' ); // OK.
-$csv_ar = fopen(STDIN); // OK.
+
 
 $output_stream = fopen( 'php://output', 'w' ); // OK.
 $output_stream = fopen( 'php://stdout', 'w' ); // OK.
 $output_stream = fopen( 'php://stderr', 'w' ); // OK.
-$output_stream = fopen( STDOUT, 'w' ); // OK.
-$output_stream = fopen( STDERR, 'w' ); // OK.
+
+
 $output_stream = fopen( 'php://fd/3', 'w' ); // OK.
 $fp = fopen("php://temp/maxmemory:$fiveMBs", 'r+'); // OK.
 readfile( 'php://filter/resource=http://www.example.com' ); // Warning.
@@ -125,9 +125,9 @@ file_get_contents(use_include_path: false, filename: MYABSPATH . 'plugin-file.js
 // Safeguard support for PHP 8.0+ named parameters for the custom logic related to fopen(), readfile() and file_put_contents().
 fopen (mode: 'w'); // Warning. Missing required param, but that's not the concern of this sniff.
 $output_stream = fopen( mode: 'w', filename: 'php://output', ); // OK.
-$output_stream = fopen( mode: 'w', context: $stream, filename: STDOUT ); // OK.
+$output_stream = fopen( mode: 'w', context: $stream, filename: 'php://output' ); // Ok.
 $bytes = readfile( use_include_path: false, context: $stream, filename: 'php://fd/3' ); // OK.
-file_put_contents( data: $data, flags : LOCK_EX, filename: STDERR ); // OK.
+file_put_contents( data: $data, flags : LOCK_EX, filename: 'php://output' ); // Ok.
 $output_stream = fopen( mode: 'r', filename: $url, ); // Warning.
 
 // Safeguard that comments in the parameters are ignored for the custom logic related to file_get_contents().

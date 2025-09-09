@@ -63,22 +63,6 @@ final class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff 
 	);
 
 	/**
-	 * Local input stream constants which should not be flagged for the file system function checks.
-	 *
-	 * @link https://www.php.net/wrappers.php
-	 *
-	 * @since 2.1.0
-	 * @since 3.0.0 The visibility was changed from `protected` to `private`.
-	 *
-	 * @var array
-	 */
-	private $allowed_local_stream_constants = array(
-		'STDIN'  => true,
-		'STDOUT' => true,
-		'STDERR' => true,
-	);
-
-	/**
 	 * Groups of functions to restrict.
 	 *
 	 * Example: groups => array(
@@ -354,9 +338,7 @@ final class AlternativeFunctionsSniff extends AbstractFunctionRestrictionsSniff 
 	protected function is_local_data_stream( $clean_param_value ) {
 
 		$stripped = TextStrings::stripQuotes( $clean_param_value );
-		if ( isset( $this->allowed_local_streams[ $stripped ] )
-			|| isset( $this->allowed_local_stream_constants[ $clean_param_value ] )
-		) {
+		if ( isset( $this->allowed_local_streams[ $stripped ] ) ) {
 			return true;
 		}
 
