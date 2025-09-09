@@ -7,7 +7,7 @@ namespace\serialize( $value ); // The sniff should start flagging this once it c
 
 serialize(); // Warning.
 \serialize( $value ); // Warning.
-unserialize(); // Warning.
+UNserialize(); // Warning.
 
 urlencode(); // Warning.
 rawurlencode(); // Ok.

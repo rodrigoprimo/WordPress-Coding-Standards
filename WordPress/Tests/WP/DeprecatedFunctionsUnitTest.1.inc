@@ -441,3 +441,4 @@ wp_targeted_link_rel();
 wp_targeted_link_rel_callback();
 /* ============ WP 6.8 ============ */
 wp_add_editor_classic_theme_styles();
+wp_ADD_editor_CLASSIC_theme_STYLES();

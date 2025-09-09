@@ -1,6 +1,7 @@
 <?php
 
 wp_redirect( $location ); // Warning.
+WP_redirect( $location ); // Warning.
 wp_safe_redirect( $location ); // OK.
 
 /*
