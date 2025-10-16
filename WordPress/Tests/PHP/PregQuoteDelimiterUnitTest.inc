@@ -13,3 +13,11 @@ preg_quote(delimiter: '#', str: $keywords); // OK.
 preg_quote(str: $keywords); // Warning.
 preg_quote(str: $keywords, delimitter: '#'); // Warning (typo in param name).
 preg_quote(delimiter: '#'); // OK. Invalid function call, but that's not the concern of this sniff.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\preg_quote($keywords); // Warning.
+MyNamespace\preg_quote($keywords); // Ok.
+\MyNamespace\preg_quote($keywords); // Ok.
+namespace\preg_quote($keywords); // The sniff should start flagging this once it can resolve relative namespaces.
