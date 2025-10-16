@@ -46,3 +46,10 @@ $warning = get_metadata(
 );
 $warning = get_metadata_raw( 'post', $post_id, $meta_key );
 $warning = get_metadata_default( 'post', $post_id, $meta_key );
+
+/*
+ * Safeguard correct handling of fully qualified and relative namespaced function calls (fully qualified global function
+ * call and partially qualified namespaced function call are already handled above).
+ */
+\MyNamespace\get_post_meta( $post_id, $meta_key ); // Ok.
+namespace\get_post_meta( $post_id, $meta_key ); // The sniff should start flagging this once it can resolve relative namespaces.
