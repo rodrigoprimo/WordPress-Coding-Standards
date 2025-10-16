@@ -57,6 +57,7 @@ final class ValidPostTypeSlugUnitTest extends AbstractSniffTestCase {
 					52 => 1,
 					62 => 1,
 					64 => 1,
+					75 => 1,
 				);
 
 			case 'ValidPostTypeSlugUnitTest.2.inc':

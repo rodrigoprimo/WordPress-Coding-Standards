@@ -68,3 +68,11 @@ register_post_type(
 	// Post type name.
 	$name,// Non string literal. Warning with severity: 3
 );
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\register_post_type( 'my-own-post-type-too-long', array() ); // Bad.
+MyNamespace\register_post_type( 'my-own-post-type-too-long', array() ); // Ok.
+\MyNamespace\register_post_type( 'my-own-post-type-too-long', array() ); // Ok.
+namespace\register_post_type( 'my-own-post-type-too-long', array() ); // The sniff should start flagging this once it can resolve relative namespaces.
