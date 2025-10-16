@@ -55,3 +55,11 @@ array_search(
 	$haystack,
 	true // Use strict typing.
 ); // Ok.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\in_array( 1, array( '1', 2 ) ); // Bad.
+MyNamespace\in_array( 1, array( '1', 2 ) ); // Ok.
+\MyNamespace\in_array( 1, array( '1', 2 ) ); // Ok.
+namespace\in_array( 1, array( '1', 2 ) ); // The sniff should start flagging this once it can resolve relative namespaces.
