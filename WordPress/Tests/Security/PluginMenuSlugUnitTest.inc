@@ -20,3 +20,11 @@ add_submenu_page(
 	parent_slug: __FILE__, // Bad.
 	capability: $capability,
 );
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\add_menu_page( $page_title, $menu_title, $capability, __FILE__, $function, $icon_url, $position ); // Bad.
+MyNamespace\add_menu_page( $page_title, $menu_title, $capability, __FILE__, $function, $icon_url, $position ); // Ok.
+\MyNamespace\add_menu_page( $page_title, $menu_title, $capability, __FILE__, $function, $icon_url, $position ); // Ok.
+namespace\add_menu_page( $page_title, $menu_title, $capability, __FILE__, $function, $icon_url, $position ); // The sniff should start flagging this once it can resolve relative namespaces.
