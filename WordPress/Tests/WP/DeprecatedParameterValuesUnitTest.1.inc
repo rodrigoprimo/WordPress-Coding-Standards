@@ -54,3 +54,11 @@ update_option(autoload: true, value: $value, option: 'blacklist_keys');
 wp_get_typography_font_size_value( $preset, array() ); // OK.
 wp_get_typography_font_size_value( $preset, true ); // Error.
 wp_get_typography_font_size_value( $preset, false ); // Error.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\get_bloginfo( 'home' ); // Bad.
+MyNamespace\get_bloginfo( 'home' ); // Ok.
+\MyNamespace\get_bloginfo( 'home' ); // Ok.
+namespace\get_bloginfo( 'home' ); // The sniff should start flagging this once it can resolve relative namespaces.
