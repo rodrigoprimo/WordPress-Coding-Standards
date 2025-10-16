@@ -73,6 +73,7 @@ final class CapabilitiesUnitTest extends AbstractSniffTestCase {
 					78  => 1,
 					85  => 1,
 					106 => 1,
+					118 => 1,
 				);
 
 			case 'CapabilitiesUnitTest.3.inc':

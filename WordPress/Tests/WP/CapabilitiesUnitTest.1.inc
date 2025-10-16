@@ -111,4 +111,11 @@ add_menu_page( $p, $t, /* deliberately empty */, $slug, );
 add_menu_page( [] ); // Should bow out because the parameter is not found.
 
 $obj->current_user_can( 'foo_bar' ); // Ok. We're not checking for method calls.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\add_posts_page( 'page_title', 'menu_title', 'administrator', 'menu_slug', 'function' ); // Bad.
 My\NamespaceS\add_posts_page( 'page_title', 'menu_title', 'administrator', 'menu_slug', 'function' ); // Ok. We're not checking namespaced functions.
+\MyNamespace\add_posts_page( 'page_title', 'menu_title', 'administrator', 'menu_slug', 'function' ); // Ok.
+namespace\add_posts_page( 'page_title', 'menu_title', 'administrator', 'menu_slug', 'function' ); // The sniff should start flagging this once it can resolve relative namespaces.
