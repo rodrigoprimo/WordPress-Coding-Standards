@@ -317,4 +317,14 @@ esc_html_e( 'foo', '' ); // Bad: text-domain can not be empty.
 // PHP 8.0+: safeguard handling of newly introduced placeholders.
 __( 'There are %1$h monkeys in the %H', 'my-slug' ); // Bad: multiple arguments should be numbered.
 
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\_( 'foo', 'my-slug' ); // Bad.
+\translate( 'foo', 'my-slug' ); // Bad.
+\translate_with_gettext_context( 'foo', 'bar', 'my-slug' ); // Bad.
+MyNamespace\translate_with_gettext_context( 'foo', 'bar', 'my-slug' ); // Ok.
+\MyNamespace\translate_with_gettext_context( 'foo', 'bar', 'my-slug' ); // Ok.
+namespace\translate_with_gettext_context( 'foo', 'bar', 'my-slug' ); // The sniff should start flagging this once it can resolve relative namespaces.
+
 // phpcs:enable WordPress.WP.I18n.MissingTranslatorsComment
