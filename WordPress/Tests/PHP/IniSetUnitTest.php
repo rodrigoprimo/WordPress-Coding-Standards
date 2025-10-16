@@ -49,6 +49,7 @@ final class IniSetUnitTest extends AbstractSniffTestCase {
 			42 => 1,
 			51 => 1,
 			55 => 1,
+			65 => 1,
 		);
 	}
 

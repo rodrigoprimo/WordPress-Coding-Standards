@@ -58,3 +58,11 @@ ini_set(
 	// Set the number of decimals.
 	0
 ); // Error.
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\ini_set( 'bcmath.scale', 0 ); // Error.
+MyNamespace\ini_set( 'bcmath.scale', 0 ); // Ok.
+\MyNamespace\ini_set( 'bcmath.scale', 0 ); // Ok.
+namespace\ini_set( 'bcmath.scale', 0 ); // The sniff should start flagging this once it can resolve relative namespaces.
