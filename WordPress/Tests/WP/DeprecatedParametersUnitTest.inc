@@ -100,3 +100,11 @@ inject_ignored_hooked_blocks_metadata_attributes('', 'deprecated');
 // All will give an WARNING as they have been deprecated after WP 6.6.
 wp_render_elements_support_styles('deprecated');
 _wp_can_use_pcre_u('deprecated');
+
+/*
+ * Safeguard correct handling of all types of namespaced function calls.
+ */
+\add_option( '', '', [] ); // Bad.
+MyNamespace\add_option( '', '', [] ); // Ok.
+\MyNamespace\add_option( '', '', [] ); // Ok.
+namespace\add_option( '', '', [] ); // The sniff should start flagging this once it can resolve relative namespaces.

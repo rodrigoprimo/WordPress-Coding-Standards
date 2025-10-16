@@ -42,6 +42,9 @@ final class DeprecatedParametersUnitTest extends AbstractSniffTestCase {
 		$errors[50] = 2;
 		$errors[76] = 2;
 
+		// Fully qualified function call.
+		$errors[106] = 1;
+
 		return $errors;
 	}
 
