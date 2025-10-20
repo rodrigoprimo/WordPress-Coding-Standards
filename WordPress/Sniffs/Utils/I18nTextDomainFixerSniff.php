@@ -32,18 +32,6 @@ use WordPressCS\WordPress\Helpers\RulesetPropertyHelper;
 final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 
 	/**
-	 * A list of tokenizers this sniff supports.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @var array
-	 */
-	public $supportedTokenizers = array(
-		'PHP',
-		'CSS',
-	);
-
-	/**
 	 * Old text domain(s) to replace.
 	 *
 	 * @since 1.2.0
@@ -248,40 +236,13 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 	private $validated_textdomain = '';
 
 	/**
-	 * Whether the plugin/theme header has been seen and fixed yet.
+	 * Whether the plugin header has been seen and fixed yet.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @var bool
 	 */
 	private $header_found = false;
-
-	/**
-	 * Possible headers for a theme.
-	 *
-	 * @link https://developer.wordpress.org/themes/basics/main-stylesheet-style-css/
-	 *
-	 * @since 1.2.0
-	 *
-	 * @var array<string, bool> Array key is the header name, the value indicated whether it is a
-	 *                          required (true) or optional (false) header.
-	 */
-	private $theme_headers = array(
-		'Theme Name'        => true,
-		'Theme URI'         => false,
-		'Author'            => true,
-		'Author URI'        => false,
-		'Description'       => true,
-		'Version'           => true,
-		'Requires at least' => true,
-		'Tested up to'      => true,
-		'Requires PHP'      => true,
-		'License'           => true,
-		'License URI'       => true,
-		'Text Domain'       => true,
-		'Tags'              => false,
-		'Domain Path'       => false,
-	);
 
 	/**
 	 * Possible headers for a plugin.
@@ -311,24 +272,13 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 	);
 
 	/**
-	 * Regex template to match theme/plugin headers.
+	 * Regex template to match plugin headers.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @var string
 	 */
 	private $header_regex_template = '`^(?:\s*(?:(?:\*|//)\s*)?)?(%s)\s*:\s*([^\r\n]+)`';
-
-	/**
-	 * Regex to match theme headers.
-	 *
-	 * Set from within the register() method.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @var string
-	 */
-	private $theme_header_regex;
 
 	/**
 	 * Regex to match plugin headers.
@@ -358,13 +308,6 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 	 * @return array
 	 */
 	public function register() {
-		$headers                  = array_map(
-			'preg_quote',
-			array_keys( $this->theme_headers ),
-			array_fill( 0, \count( $this->theme_headers ), '`' )
-		);
-		$this->theme_header_regex = sprintf( $this->header_regex_template, implode( '|', $headers ) );
-
 		$headers                   = array_map(
 			'preg_quote',
 			array_keys( $this->plugin_headers ),
@@ -450,10 +393,10 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 		if ( \T_DOC_COMMENT_OPEN_TAG === $this->tokens[ $stackPtr ]['code']
 			|| \T_COMMENT === $this->tokens[ $stackPtr ]['code']
 		) {
-			// Examine for plugin/theme file header.
+			// Examine for plugin file header.
 			return $this->process_comments( $stackPtr );
 
-		} elseif ( isset( $this->phpcsFile->tokenizerType ) === false || 'CSS' !== $this->phpcsFile->tokenizerType ) {
+		} else {
 			// Examine a T_STRING token in a PHP file as a function call.
 			return parent::process_token( $stackPtr );
 		}
@@ -658,7 +601,7 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 
 
 	/**
-	 * Process comments to find the plugin/theme headers.
+	 * Process comments to find the plugin headers.
 	 *
 	 * @since 1.2.0
 	 *
@@ -672,25 +615,9 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 			return;
 		}
 
-		$regex   = $this->plugin_header_regex;
-		$headers = $this->plugin_headers;
-		$type    = 'plugin';
-
 		$file = FilePath::getName( $this->phpcsFile );
 		if ( 'STDIN' === $file ) {
 			return;
-		}
-
-		$file_name = basename( $file );
-		if ( isset( $this->phpcsFile->tokenizerType ) && 'CSS' === $this->phpcsFile->tokenizerType ) {
-			if ( 'style.css' !== $file_name && ! defined( 'PHP_CODESNIFFER_IN_TESTS' ) ) {
-				// CSS files only need to be examined for the file header.
-				return $this->phpcsFile->numTokens;
-			}
-
-			$regex   = $this->theme_header_regex;
-			$headers = $this->theme_headers;
-			$type    = 'theme';
 		}
 
 		$comment_details = array(
@@ -714,7 +641,7 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 					|| false === $comment_details['required_header_found']
 					|| $comment_details['headers_found'] < 3
 				) {
-					$comment_details = $this->examine_comment_line( $current, $regex, $headers, $comment_details );
+					$comment_details = $this->examine_comment_line( $current, $this->plugin_header_regex, $this->plugin_headers, $comment_details );
 				}
 
 				if ( true === $block_comment && substr( $this->tokens[ $current ]['content'], -2 ) === '*/' ) {
@@ -736,7 +663,7 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 			$current = $stackPtr;
 
 			while ( ( $current = $this->phpcsFile->findNext( \T_DOC_COMMENT_STRING, ( $current + 1 ), $closer ) ) !== false ) {
-				$comment_details = $this->examine_comment_line( $current, $regex, $headers, $comment_details );
+				$comment_details = $this->examine_comment_line( $current, $this->plugin_header_regex, $this->plugin_headers, $comment_details );
 
 				if ( false !== $comment_details['text_domain_ptr']
 					&& true === $comment_details['required_header_found']
@@ -750,7 +677,7 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 			$skip_to = $closer;
 		}
 
-		// So, was this the plugin/theme header ?
+		// So, was this the plugin header ?
 		if ( true === $comment_details['required_header_found']
 			&& $comment_details['headers_found'] >= 3
 		) {
@@ -764,11 +691,10 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 					&& ( \in_array( $text_domain_found, $this->old_text_domain, true ) )
 				) {
 					$fix = $this->phpcsFile->addFixableError(
-						'Mismatched text domain in %s header. Expected \'%s\' but found \'%s\'',
+						'Mismatched text domain in plugin header. Expected \'%s\' but found \'%s\'',
 						$text_domain_ptr,
 						'TextDomainHeaderMismatch',
 						array(
-							$type,
 							$this->new_text_domain,
 							$text_domain_found,
 						)
@@ -791,10 +717,9 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 				$last_header_matches = $comment_details['last_header_matches'];
 
 				$fix = $this->phpcsFile->addFixableError(
-					'Missing "Text Domain" in %s header',
+					'Missing "Text Domain" in plugin header',
 					$last_header_ptr,
-					'MissingTextDomainHeader',
-					array( $type )
+					'MissingTextDomainHeader'
 				);
 
 				if ( true === $fix ) {
@@ -829,13 +754,13 @@ final class I18nTextDomainFixerSniff extends AbstractFunctionParameterSniff {
 	}
 
 	/**
-	 * Examine an individual token in a larger comment for plugin/theme headers.
+	 * Examine an individual token in a larger comment for plugin headers.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @param int    $stackPtr        The position of the current token in the stack.
 	 * @param string $regex           The regex to use to examine the comment line.
-	 * @param array  $headers         Valid headers for a plugin or theme.
+	 * @param array  $headers         Valid headers for a plugin.
 	 * @param array  $comment_details The information collected so far.
 	 *
 	 * @return array Adjusted $comment_details array
