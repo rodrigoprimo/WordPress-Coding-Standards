@@ -54,15 +54,14 @@ final class EnqueuedResourceParametersSniff extends AbstractFunctionParameterSni
 	);
 
 	/**
-	 * False + T_NS_SEPARATOR + the empty tokens array.
+	 * False + the empty tokens array.
 	 *
 	 * This array is enriched with the $emptyTokens array in the register() method.
 	 *
 	 * @var array<int|string, int|string>
 	 */
 	private $false_tokens = array(
-		\T_FALSE        => \T_FALSE,
-		\T_NS_SEPARATOR => \T_NS_SEPARATOR, // Needed to handle fully qualified \false (PHPCS 3.x).
+		\T_FALSE => \T_FALSE,
 	);
 
 	/**
