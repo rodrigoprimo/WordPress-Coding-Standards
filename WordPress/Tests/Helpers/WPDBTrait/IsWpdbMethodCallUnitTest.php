@@ -219,6 +219,30 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 				'expectedResult' => false,
 				'tokenType'      => \T_STRING,
 			),
+			'partially_qualified' => array(
+				'testMarker'     => '/* testPartiallyQualified */',
+				'expectedResult' => false,
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'wpdb',
+			),
+			'fully_qualified_namespaced' => array(
+				'testMarker'     => '/* testFullyQualifiedNamespaced */',
+				'expectedResult' => false,
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'wpdb',
+			),
+			'namespace_relative' => array(
+				'testMarker'     => '/* testNamespaceRelative */',
+				'expectedResult' => false,
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'wpdb',
+			),
+			'namespace_relative_sub' => array(
+				'testMarker'     => '/* testNamespaceRelativeSub */',
+				'expectedResult' => false,
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'wpdb',
+			),
 			'not_target_method' => array(
 				'testMarker'      => '/* testNotTargetMethod */',
 				'expectedResult'  => false,
@@ -297,43 +321,7 @@ final class IsWpdbMethodCallUnitTest extends UtilityMethodTestCase {
 				'hasEnd'          => true,
 			),
 
-			// False positives. See comments in the test case file.
-			'partially_qualified' => array(
-				'testMarker'      => '/* testPartiallyQualified */',
-				'expectedResult'  => true,
-				'tokenType'       => \T_STRING,
-				'tokenContent'    => 'wpdb',
-				'hasMethodPtr'    => true,
-				'openParenMarker' => '/* testPartiallyQualifiedOpenParen */',
-				'hasEnd'          => true,
-			),
-			'fully_qualified_namespaced' => array(
-				'testMarker'      => '/* testFullyQualifiedNamespaced */',
-				'expectedResult'  => true,
-				'tokenType'       => \T_STRING,
-				'tokenContent'    => 'wpdb',
-				'hasMethodPtr'    => true,
-				'openParenMarker' => '/* testFullyQualifiedNamespacedOpenParen */',
-				'hasEnd'          => true,
-			),
-			'namespace_relative' => array(
-				'testMarker'      => '/* testNamespaceRelative */',
-				'expectedResult'  => true,
-				'tokenType'       => \T_STRING,
-				'tokenContent'    => 'wpdb',
-				'hasMethodPtr'    => true,
-				'openParenMarker' => '/* testNamespaceRelativeOpenParen */',
-				'hasEnd'          => true,
-			),
-			'namespace_relative_sub' => array(
-				'testMarker'      => '/* testNamespaceRelativeSub */',
-				'expectedResult'  => true,
-				'tokenType'       => \T_STRING,
-				'tokenContent'    => 'wpdb',
-				'hasMethodPtr'    => true,
-				'openParenMarker' => '/* testNamespaceRelativeSubOpenParen */',
-				'hasEnd'          => true,
-			),
+			// False positive. See comment in the test case file.
 			'not_string_or_variable' => array(
 				'testMarker'      => '/* testNotStringOrVariable */',
 				'expectedResult'  => true,

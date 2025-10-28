@@ -108,17 +108,8 @@ final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 			418 => 1,
 
 			// Fully qualified \WPDB::prepare() call.
-			531 => 1,
-			532 => 1,
-
-			/**
-			 * False positives. See https://github.com/WordPress/WordPress-Coding-Standards/issues/2710 and
-			 * comment in the test case file.
-			 */
-			533 => 1,
-			534 => 1,
-			535 => 1,
-			536 => 1,
+			527 => 1,
+			528 => 1,
 		);
 	}
 

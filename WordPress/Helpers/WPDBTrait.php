@@ -79,6 +79,11 @@ trait WPDBTrait {
 			return false;
 		}
 
+		// If calling the method statically, ensure we are calling the global wpdb class.
+		if ( \T_STRING === $tokens[ $stackPtr ]['code'] && ContextHelper::is_token_namespaced( $phpcsFile, $stackPtr ) ) {
+			return false;
+		}
+
 		$methodPtr = $phpcsFile->findNext( Tokens::$emptyTokens, ( $is_object_call + 1 ), null, true, null, true );
 		if ( false === $methodPtr ) {
 			return false;

@@ -25,6 +25,15 @@ $WPDB->prepare( 'SELECT * FROM table' );
 /* testVariableMethodCall */
 $wpdb->$prepare /* testVariableMethodCallOpenParen */ ( 'SELECT * FROM table' );
 
+/* testPartiallyQualified */
+MyNamespace\wpdb::esc_like /* testPartiallyQualifiedOpenParen */ ( $find );
+/* testFullyQualifiedNamespaced */
+\MyNamespace\wpdb::esc_like /* testFullyQualifiedNamespacedOpenParen */ ( $find );
+/* testNamespaceRelative */
+namespace\wpdb::esc_like /* testNamespaceRelativeOpenParen */ ( $find ); // The method should start recognizing this as a WPDB method call once it can resolve relative namespaces.
+/* testNamespaceRelativeSub */
+namespace\Sub\wpdb::esc_like /* testNamespaceRelativeSubOpenParen */ ( $find );
+
 /*
  * The below should be recognized as a $wpdb method call.
  */
@@ -41,20 +50,6 @@ wpdb::esc_like /* testUnqualifiedClassLowercaseOpenParen */ ( $find );
 \wpdb::esc_like /* testFullyQualifiedGlobalLowercaseOpenParen */ ( $find );
 /* testFullyQualifiedGlobalUppercase */
 \WPDB /* comment */ :: /* comment */ esc_like /* testFullyQualifiedGlobalUppercaseOpenParen */ ( $find );
-
-/*
- * The calls below are currently false positives. The method incorrectly identifies calls to a non-global class named
- * `wpdb` preceded by a namespace as calls to the global `wpdb` class.
- * See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2710
- */
-/* testPartiallyQualified */
-MyNamespace\wpdb::esc_like /* testPartiallyQualifiedOpenParen */ ( $find );
-/* testFullyQualifiedNamespaced */
-\MyNamespace\wpdb::esc_like /* testFullyQualifiedNamespacedOpenParen */ ( $find );
-/* testNamespaceRelative */
-namespace\wpdb::esc_like /* testNamespaceRelativeOpenParen */ ( $find );
-/* testNamespaceRelativeSub */
-namespace\Sub\wpdb::esc_like /* testNamespaceRelativeSubOpenParen */ ( $find );
 
 /*
  * The call below is currently a false positive. The method does not bail early when the token is not T_STRING or

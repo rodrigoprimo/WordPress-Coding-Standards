@@ -523,10 +523,6 @@ $callback = $wpdb->prepare(...); // OK.
  *
  * Note that calling wpdb::prepare() statically will result in an error. Still, the tests are included here since the
  * sniff handles those calls.
- *
- * Except for the fully qualified global calls, the calls below are currently false positives. The sniff
- * incorrectly identifies calls to a non-global class named `wpdb` preceded by a namespace separator as calls to the
- * global `$wpdb` object. Related to: https://github.com/WordPress/WordPress-Coding-Standards/issues/2710.
  */
 $sql = \wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
 $sql = \WPDB::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
@@ -534,6 +530,10 @@ $sql = MyNamespace\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND 
 $sql = \MyNamespace\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
 $sql = namespace\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" ); // The sniff should start flagging this once it can resolve relative namespaces.
 $sql = namespace\Sub\wpdb::prepare( "SELECT * FROM $wpdb->users WHERE id = %d AND user_login = %s" );
+
+
+
+
 
 /*
  * Safeguard correct handling of namespaced implode() calls when nested as a parameter to sprintf() (except fully
