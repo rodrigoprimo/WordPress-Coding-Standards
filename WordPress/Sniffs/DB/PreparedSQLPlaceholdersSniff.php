@@ -14,6 +14,7 @@ use PHPCSUtils\Tokens\Collections;
 use PHPCSUtils\Utils\Arrays;
 use PHPCSUtils\Utils\PassedParameters;
 use PHPCSUtils\Utils\TextStrings;
+use WordPressCS\WordPress\Helpers\ContextHelper;
 use WordPressCS\WordPress\Helpers\MinimumWPVersionTrait;
 use WordPressCS\WordPress\Helpers\WPDBTrait;
 use WordPressCS\WordPress\Sniff;
@@ -226,7 +227,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				// Detect a specific pattern for variable replacements in combination with `IN`.
 				if ( \T_STRING === $this->tokens[ $i ]['code'] ) {
 
-					if ( 'sprintf' === strtolower( $this->tokens[ $i ]['content'] ) ) {
+					if ( $this->is_global_function_call( $i, 'sprintf' ) ) {
 						$sprintf_parameters = PassedParameters::getParameters( $this->phpcsFile, $i );
 
 						if ( ! empty( $sprintf_parameters ) ) {
@@ -265,7 +266,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 						}
 						unset( $sprintf_parameters, $valid_sprintf, $last_param );
 
-					} elseif ( 'implode' === strtolower( $this->tokens[ $i ]['content'] ) ) {
+					} elseif ( $this->is_global_function_call( $i, 'implode' ) ) {
 						$ignore_tokens = Tokens::$emptyTokens + array(
 							\T_STRING_CONCAT => \T_STRING_CONCAT,
 							\T_NS_SEPARATOR  => \T_NS_SEPARATOR,
@@ -679,9 +680,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				$sprintf_param['end'],
 				true
 			);
-			if ( \T_STRING === $this->tokens[ $implode ]['code']
-				&& 'implode' === strtolower( $this->tokens[ $implode ]['content'] )
-			) {
+			if ( $this->is_global_function_call( $implode, 'implode' ) ) {
 				if ( $this->analyse_implode( $implode ) === true ) {
 					++$found;
 				}
@@ -737,9 +736,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 			true
 		);
 
-		if ( \T_STRING !== $this->tokens[ $array_fill ]['code']
-			|| 'array_fill' !== strtolower( $this->tokens[ $array_fill ]['content'] )
-		) {
+		if ( ! $this->is_global_function_call( $array_fill, 'array_fill' ) ) {
 			return false;
 		}
 
@@ -762,5 +759,43 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 		}
 
 		return (bool) preg_match( '`^(["\'])%[dfFs]\1$`', $array_fill_value_param['clean'] );
+	}
+
+	/**
+	 * Check if a token represents a call to a global function with the specified name.
+	 *
+	 * Note: This is not a comprehensive global function call check. It was designed specifically
+	 * for this sniff's needs and may not handle all edge cases.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param int    $function_ptr   The position of the token to check.
+	 * @param string $function_name The function name to check for (case-insensitive).
+	 *
+	 * @return bool True if it's a call to the global function, false otherwise.
+	 */
+	protected function is_global_function_call( $function_ptr, $function_name ) {
+		if ( \T_STRING !== $this->tokens[ $function_ptr ]['code'] ) {
+			return false;
+		}
+
+		if ( strtolower( $this->tokens[ $function_ptr ]['content'] ) !== $function_name ) {
+			return false;
+		}
+
+		$next = $this->phpcsFile->findNext( Tokens::$emptyTokens, ( $function_ptr + 1 ), null, true );
+		if ( false === $next || \T_OPEN_PARENTHESIS !== $this->tokens[ $next ]['code'] ) {
+			return false;
+		}
+
+		if ( ContextHelper::has_object_operator_before( $this->phpcsFile, $function_ptr ) === true ) {
+			return false;
+		}
+
+		if ( ContextHelper::is_token_namespaced( $this->phpcsFile, $function_ptr ) === true ) {
+			return false;
+		}
+
+		return true;
 	}
 }

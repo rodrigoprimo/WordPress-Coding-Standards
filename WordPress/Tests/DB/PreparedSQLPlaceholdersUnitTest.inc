@@ -653,3 +653,150 @@ $where = $wpdb->prepare(
 		. ')',
 	'publish'
 );
+
+/*
+ * Safeguard correct handling of all types of namespaced calls to sprintf() except fully qualified calls to the
+ * global sprintf() function, which is already handled above.
+ */
+$where = $wpdb->prepare(
+	MyNamespace\sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	\MyNamespace\sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	namespace\sprintf( // This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	namespace\Sub\sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+
+/*
+ * Safeguard correct handling of method calls to methods named sprintf(), implode(), or array_fill().
+ * These should NOT be analyzed as global function calls.
+ */
+
+// sprintf() method calls.
+$where = $wpdb->prepare(
+	$obj->sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	$obj?->sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	MyClass::sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+
+// implode() method calls nested inside sprintf().
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		$obj->implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		$obj?->implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		MyClass::implode( ',', array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+
+// implode() method calls in direct string concatenation.
+$where = $wpdb->prepare(
+	"post_status = %s AND post_type IN ("
+		. $obj->implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"post_status = %s AND post_type IN ("
+		. $obj?->implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"post_status = %s AND post_type IN ("
+		. MyClass::implode( ',', array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+
+// array_fill() method calls nested inside implode() which is nested inside sprintf().
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', $obj->array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', $obj?->array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+$where = $wpdb->prepare(
+	sprintf(
+		"{$wpdb->posts}.post_type IN (%s)",
+		implode( ',', MyClass::array_fill( 0, count($post_types), '%s' ) )
+	),
+	$post_types
+);
+
+// array_fill() method calls nested inside implode() in direct string concatenation.
+$where = $wpdb->prepare(
+	"post_status = %s AND post_type IN ("
+		. implode( ',', $obj->array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"post_status = %s AND post_type IN ("
+		. implode( ',', $obj?->array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
+$where = $wpdb->prepare(
+	"post_status = %s AND post_type IN ("
+		. implode( ',', MyClass::array_fill( 0, count($post_types), '%s' ) )
+		. ')',
+	'publish'
+);
