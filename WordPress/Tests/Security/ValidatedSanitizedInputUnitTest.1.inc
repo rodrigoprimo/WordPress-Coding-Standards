@@ -500,3 +500,110 @@ function test_in_match_condition_is_regarded_as_comparison() {
 		};
 	}
 }
+
+/*
+ * Safeguard correct handling of qualified and relative namespaced calls to array key exists functions.
+ * Non-namespaced and fully qualified calls are already covered above.
+ */
+function test_namespaced_array_key_exists() {
+	if ( MyNamespace\array_key_exists( 'key_exists1', $_POST ) ) {
+		$id = (int) $_POST['key_exists1']; // Bad.
+	}
+	if ( namespace\array_key_exists( 'key_exists2', $_POST ) ) {
+		$id = (int) $_POST['key_exists2']; // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	}
+}
+
+/*
+ * Safeguard correct handling of all types of namespaced calls to type test functions.
+ */
+function test_namespaced_type_test_functions() {
+	if ( isset( $_POST['type_test1'] ) && \is_int( $_POST['type_test1'] ) ) {} // OK.
+	if ( isset( $_POST['type_test2'] ) && MyNamespace\is_int( $_POST['type_test2'] ) ) {} // Bad.
+	if ( isset( $_POST['type_test3'] ) && \MyNamespace\is_int( $_POST['type_test3'] ) ) {} // Bad.
+	if ( isset( $_POST['type_test4'] ) && namespace\is_int( $_POST['type_test4'] ) ) {} // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+}
+
+/*
+ * Safeguard correct handling of all types of namespaced calls to array comparison functions.
+ */
+function test_namespaced_array_comparison_functions() {
+	if ( isset( $_POST['array_cmp1'] ) && \in_array( $_POST['array_cmp1'], $my_array, true ) ) {} // OK.
+	if ( isset( $_POST['array_cmp2'] ) && MyNamespace\in_array( $_POST['array_cmp2'], $my_array, true ) ) {} // Bad.
+	if ( isset( $_POST['array_cmp3'] ) && \MyNamespace\in_array( $_POST['array_cmp3'], $my_array, true ) ) {} // Bad.
+	if ( isset( $_POST['array_cmp4'] ) && namespace\in_array( $_POST['array_cmp4'], $my_array, true ) ) {} // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+}
+
+/*
+ * Safeguard correct handling of all types of namespaced calls to unslashing functions.
+ *
+ * Note: The "Bad" test cases below are false negatives. They should trigger 2 errors (MissingUnslash + 
+ * InputNotSanitized), not 1 (MissingUnslash). This problem only affects PHPCS 3.x and does not happen in PHPCS 4.x. It 
+ * will be addressed in https://github.com/WordPress/WordPress-Coding-Standards/issues/2665.
+ */
+function test_namespaced_unslashing_functions() {
+	if ( isset( $_POST['unslash1'] ) ) {
+		$text = sanitize_text_field( \wp_unslash( $_POST['unslash1'] ) ); // OK.
+	}
+	if ( isset( $_POST['unslash2'] ) ) {
+		$text = sanitize_text_field( MyNamespace\wp_unslash( $_POST['unslash2'] ) ); // Bad.
+	}
+	if ( isset( $_POST['unslash3'] ) ) {
+		$text = sanitize_text_field( \MyNamespace\wp_unslash( $_POST['unslash3'] ) ); // Bad.
+	}
+	if ( isset( $_POST['unslash4'] ) ) {
+		$text = sanitize_text_field( namespace\wp_unslash( $_POST['unslash4'] ) ); // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	}
+}
+
+/*
+ * Safeguard correct handling of all types of namespaced calls to array walking functions.
+ */
+function test_namespaced_array_walking_functions() {
+	if ( isset( $_POST['array_walk1'] ) ) {
+		$text = \array_map( 'sanitize_text_field', \wp_unslash( $_POST['array_walk1'] ) ); // OK.
+	}
+	if ( isset( $_POST['array_walk2'] ) ) {
+		$text = MyNamespace\array_map( 'sanitize_text_field', wp_unslash( $_POST['array_walk2'] ) ); // Bad.
+	}
+	if ( isset( $_POST['array_walk3'] ) ) {
+		$text = \MyNamespace\array_map( 'sanitize_text_field', \wp_unslash( $_POST['array_walk3'] ) ); // Bad.
+	}
+	if ( isset( $_POST['array_walk4'] ) ) {
+		$text = namespace\array_map( 'sanitize_text_field', wp_unslash( $_POST['array_walk4'] ) ); // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	}
+}
+
+/*
+ * Safeguard correct handling of fully qualified and relative namespaced calls to sanitizing functions.
+ * Qualified calls are already covered above.
+ */
+function test_namespaced_sanitizing_functions() {
+	if ( isset( $_POST['sanitize1'] ) ) {
+		$text = \sanitize_text_field( wp_unslash( $_POST['sanitize1'] ) ); // OK.
+	}
+	if ( isset( $_POST['sanitize2'] ) ) {
+		$text = \MyNamespace\sanitize_text_field( wp_unslash( $_POST['sanitize2'] ) ); // Bad.
+	}
+	if ( isset( $_POST['sanitize3'] ) ) {
+		$text = namespace\sanitize_text_field( wp_unslash( $_POST['sanitize3'] ) ); // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	}
+}
+
+/*
+ * Safeguard correct handling of all types of namespaced calls to unslashing + sanitizing functions.
+ */
+function test_namespaced_unslashing_sanitizing_functions() {
+	if ( isset( $_POST['unslash_sanitize1'] ) ) {
+		$id = \absint( $_POST['unslash_sanitize1'] ); // OK.
+	}
+	if ( isset( $_POST['unslash_sanitize2'] ) ) {
+		$id = MyNamespace\absint( $_POST['unslash_sanitize2'] ); // Bad.
+	}
+	if ( isset( $_POST['unslash_sanitize3'] ) ) {
+		$id = \MyNamespace\absint( $_POST['unslash_sanitize3'] ); // Bad.
+	}
+	if ( isset( $_POST['unslash_sanitize4'] ) ) {
+		$id = namespace\absint( $_POST['unslash_sanitize4'] ); // Bad. Note: This should NOT be flagged in the future once the sniff is able to resolve relative namespaces.
+	}
+}
