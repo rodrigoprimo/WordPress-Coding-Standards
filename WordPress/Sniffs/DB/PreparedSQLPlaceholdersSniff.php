@@ -778,6 +778,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 	 * @return bool True if it's a call to the global function, false otherwise.
 	 */
 	protected function is_global_function_call( $function_ptr, $function_name ) {
+		// TODO: check if this method can indeed be removed.
 		if ( \T_STRING !== $this->tokens[ $function_ptr ]['code']
 			&& \T_NAME_FULLY_QUALIFIED !== $this->tokens[ $function_ptr ]['code']
 		) {
