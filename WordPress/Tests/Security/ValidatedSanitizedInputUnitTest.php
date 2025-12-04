@@ -10,6 +10,7 @@
 namespace WordPressCS\WordPress\Tests\Security;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffTestCase;
+use PHPCSUtils\BackCompat\Helper;
 
 /**
  * Unit test class for the ValidatedSanitizedInput sniff.
@@ -35,6 +36,9 @@ final class ValidatedSanitizedInputUnitTest extends AbstractSniffTestCase {
 	 * @return array<int, int> Key is the line number, value is the number of expected errors.
 	 */
 	public function getErrorList( $testFile = '' ) {
+		$phpcs_version = Helper::getVersion();
+		$is_phpcs_4    = version_compare( $phpcs_version, '3.99.99', '>' );
+
 		switch ( $testFile ) {
 			case 'ValidatedSanitizedInputUnitTest.1.inc':
 				return array(
@@ -122,9 +126,9 @@ final class ValidatedSanitizedInputUnitTest extends AbstractSniffTestCase {
 					532 => 2,
 					533 => 2,
 					534 => 2,
-					549 => 1,
-					552 => 1,
-					555 => 1,
+					549 => ( true === $is_phpcs_4 ) ? 2 : 1,
+					552 => ( true === $is_phpcs_4 ) ? 2 : 1,
+					555 => ( true === $is_phpcs_4 ) ? 2 : 1,
 					567 => 1,
 					570 => 1,
 					573 => 1,
