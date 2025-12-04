@@ -10,6 +10,7 @@
 namespace WordPressCS\WordPress\Tests\Helpers\SanitizationHelperTrait;
 
 use PHP_CodeSniffer\Files\File;
+use PHPCSUtils\BackCompat\Helper;
 use PHPCSUtils\TestUtils\UtilityMethodTestCase;
 use WordPressCS\WordPress\Helpers\SanitizationHelperTrait;
 
@@ -85,6 +86,9 @@ final class IsSanitizedUnitTest extends UtilityMethodTestCase {
 	 * @return array<string, array<string, bool|string>>
 	 */
 	public static function dataIsSanitized() {
+		$phpcs_version = Helper::getVersion();
+		$is_phpcs_4    = version_compare( $phpcs_version, '3.99.99', '>' );
+
 		return array(
 			'not_sanitized_echo'                       => array(
 				'testMarker'     => '/* testNotSanitizedEcho */',
@@ -166,18 +170,21 @@ final class IsSanitizedUnitTest extends UtilityMethodTestCase {
 				'testMarker'     => '/* testFullyQualifiedUnslashThenSanitized */',
 				'expectedResult' => true,
 			),
+
+			// These are false positives in PHPCS 3.x. See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2665.
 			'namespaced_unslash_but_still_sanitized_1' => array(
 				'testMarker'     => '/* testNamespacedUnslashButStillSanitized1 */',
-				'expectedResult' => true,
+				'expectedResult' => ( true === $is_phpcs_4 ) ? false : true,
 			),
 			'namespaced_unslash_but_still_sanitized_2' => array(
 				'testMarker'     => '/* testNamespacedUnslashButStillSanitized2 */',
-				'expectedResult' => true,
+				'expectedResult' => ( true === $is_phpcs_4 ) ? false : true,
 			),
 			'namespaced_unslash_but_still_sanitized_3' => array(
 				'testMarker'     => '/* testNamespacedUnslashButStillSanitized3 */',
-				'expectedResult' => true,
+				'expectedResult' => ( true === $is_phpcs_4 ) ? false : true,
 			),
+
 			'int_cast'                                 => array(
 				'testMarker'     => '/* testIntCast */',
 				'expectedResult' => true,
