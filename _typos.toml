@@ -2,8 +2,6 @@
 extend-exclude = [
     "WordPress/Tests/*/*.inc",
     "WordPress/Tests/*/*.fixed",
-    "WordPress/Tests/*/*.css",
-    "WordPress/Tests/*/*.js",
 ]
 ignore-hidden = true
 
