@@ -136,7 +136,7 @@ final class CapitalPDangitSniff extends Sniff {
 		if ( \T_NAMESPACE === $this->tokens[ $stackPtr ]['code'] ) {
 			$ns_name = Namespaces::getDeclaredName( $this->phpcsFile, $stackPtr );
 			if ( empty( $ns_name ) ) {
-				// Namespace operator or declaration without name.
+				// Declaration without name.
 				return;
 			}
 

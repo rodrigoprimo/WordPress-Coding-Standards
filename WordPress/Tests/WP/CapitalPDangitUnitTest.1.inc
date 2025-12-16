@@ -196,7 +196,7 @@ $value = function_call( 'git.wordpress.test' );
  * Test recognizing misspelling in namespace names.
  */
 namespace {} // OK - no name.
-echo namespace\function_name(); // OK - operator.
+
 namespace Foo\WordPress\Bar; // OK.
 namespace My_WordPress_Plugin; // OK.
 
