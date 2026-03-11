@@ -346,6 +346,15 @@ final class OptionAutoloadSniff extends AbstractFunctionParameterSniff {
 			}
 		}
 
+		// In PHPCS 4.x, `\true`, `\false` and `\null` are tokenized as T_TRUE, T_FALSE and
+		// T_NULL with the backslash included in the token content. Strip it from the
+		// normalized value so the valid value check below can match.
+		if ( in_array( $this->tokens[ $param_first_token ]['code'], array( \T_FALSE, \T_TRUE, \T_NULL ), true )
+			&& strpos( $this->tokens[ $param_first_token ]['content'], '\\' ) === 0
+		) {
+			$normalized_value = substr( $normalized_value, 1 );
+		}
+
 		if ( isset( $this->autoload_is_optional[ $function_name ] ) ) {
 			$valid_values = $this->valid_values_add_and_update;
 		} else {
@@ -357,16 +366,19 @@ final class OptionAutoloadSniff extends AbstractFunctionParameterSniff {
 			return;
 		}
 
-		if ( in_array( $this->tokens[ $param_first_token ]['code'], array( \T_VARIABLE, \T_STRING ), true )
-			&& 'null' !== strtolower( $this->tokens[ $param_first_token ]['content'] )
+		if ( \T_VARIABLE === $this->tokens[ $param_first_token ]['code']
+			|| ( isset( Collections::nameTokens()[ $this->tokens[ $param_first_token ]['code'] ] )
+				&& 'null' !== strtolower( $this->tokens[ $param_first_token ]['content'] )
+			)
 		) {
 			/*
-			 * Bail early if the first non-empty token in the parameter is T_VARIABLE or T_STRING as
-			 * this means it is not possible to determine the value.
+			 * Bail early if the first non-empty token in the parameter is T_VARIABLE or a name
+			 * token as this means it is not possible to determine the value.
 			 *
-			 * Exception for `null`: when FQN `\null` is used, PHPCS tokenizes it as T_STRING. Since
-			 * `null` is a known invalid value for the `$autoload` parameter in some functions (not
-			 * an undetermined value), we shouldn't bail in this case.
+			 * Exception for `null`: when FQN `\null` is used, PHPCS 3.x tokenizes it as T_STRING.
+			 * Since `null` is a known invalid value for the `$autoload` parameter in some functions
+			 * (not an undetermined value), we shouldn't bail in this case. This exception only
+			 * applies to PHPCS 3.x as PHPCS 4.x tokenizes `\null` as `T_NULL`.
 			 *
 			 * Similar special treatment for FQN `\true` and `\false` is not needed as these values
 			 * are always valid and already handled in the condition above.
