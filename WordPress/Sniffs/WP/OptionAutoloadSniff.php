@@ -334,21 +334,9 @@ final class OptionAutoloadSniff extends AbstractFunctionParameterSniff {
 
 		$normalized_value = strtolower( $autoload_info['clean'] );
 
-		if ( \T_NS_SEPARATOR === $this->tokens[ $param_first_token ]['code'] && is_int( $param_second_token ) ) {
-			$token_content_lowercase = strtolower( $this->tokens[ $param_second_token ]['content'] );
-
-			if ( isset( $this->valid_values_add_and_update[ $token_content_lowercase ] ) ) {
-				// Ensure the sniff handles correctly `true`, `false` and `null` when they are
-				// namespaced (preceded by a backslash).
-				$param_first_token  = $param_second_token;
-				$param_second_token = false;
-				$normalized_value   = substr( $normalized_value, 1 );
-			}
-		}
-
-		// In PHPCS 4.x, `\true`, `\false` and `\null` are tokenized as T_TRUE, T_FALSE and
-		// T_NULL with the backslash included in the token content. Strip it from the
-		// normalized value so the valid value check below can match.
+		// `\true`, `\false` and `\null` are tokenized as T_TRUE, T_FALSE and T_NULL with the
+		// backslash included in the token content. Strip it from the normalized value so the
+		// valid value check below can match.
 		if ( in_array( $this->tokens[ $param_first_token ]['code'], array( \T_FALSE, \T_TRUE, \T_NULL ), true )
 			&& strpos( $this->tokens[ $param_first_token ]['content'], '\\' ) === 0
 		) {
@@ -367,22 +355,10 @@ final class OptionAutoloadSniff extends AbstractFunctionParameterSniff {
 		}
 
 		if ( \T_VARIABLE === $this->tokens[ $param_first_token ]['code']
-			|| ( isset( Collections::nameTokens()[ $this->tokens[ $param_first_token ]['code'] ] )
-				&& 'null' !== strtolower( $this->tokens[ $param_first_token ]['content'] )
-			)
+			|| isset( Collections::nameTokens()[ $this->tokens[ $param_first_token ]['code'] ] )
 		) {
-			/*
-			 * Bail early if the first non-empty token in the parameter is T_VARIABLE or a name
-			 * token as this means it is not possible to determine the value.
-			 *
-			 * Exception for `null`: when FQN `\null` is used, PHPCS 3.x tokenizes it as T_STRING.
-			 * Since `null` is a known invalid value for the `$autoload` parameter in some functions
-			 * (not an undetermined value), we shouldn't bail in this case. This exception only
-			 * applies to PHPCS 3.x as PHPCS 4.x tokenizes `\null` as `T_NULL`.
-			 *
-			 * Similar special treatment for FQN `\true` and `\false` is not needed as these values
-			 * are always valid and already handled in the condition above.
-			 */
+			// Bail early if the first non-empty token in the parameter is T_VARIABLE or a name
+			// token as this means it is not possible to determine the value.
 			$this->phpcsFile->recordMetric( $param_first_token, self::METRIC_NAME, 'undetermined value' );
 			return;
 		}
