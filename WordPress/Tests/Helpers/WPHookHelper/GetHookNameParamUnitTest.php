@@ -81,6 +81,11 @@ final class GetHookNameParamUnitTest extends TestCase {
 				),
 				'expectedResult' => array( 'my_action' ),
 			),
+			'fully_qualified_name' => array(
+				'functionName'   => '\apply_filters',
+				'parameters'     => array( 1 => array( 'my_action' ) ),
+				'expectedResult' => array( 'my_action' ),
+			),
 		);
 	}
 }
