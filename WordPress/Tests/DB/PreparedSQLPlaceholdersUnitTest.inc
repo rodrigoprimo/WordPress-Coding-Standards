@@ -661,10 +661,6 @@ $where = $wpdb->prepare(
 /*
  * Safeguard correct handling of all types of namespaced calls to sprintf() except fully qualified calls to the
  * global sprintf() function, which is already handled above.
- *
- * The calls below are currently false negatives. The sniff incorrectly treats namespaced sprintf() calls as
- * calls to the global sprintf() function and does not flag them.
- * See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2640
  */
 $where = $wpdb->prepare(
 	MyNamespace\sprintf(
@@ -700,9 +696,7 @@ $where = $wpdb->prepare(
  * These should NOT be analyzed as global function calls.
  */
 
-// sprintf() method calls. The sprintf() calls below are currently false negatives. The sniff incorrectly treats method
-// calls with the same name as global functions as calls to the global functions and does not flag them.
-// See: https://github.com/WordPress/WordPress-Coding-Standards/issues/2640
+// sprintf() method calls.
 $where = $wpdb->prepare(
 	$obj->sprintf(
 		"{$wpdb->posts}.post_type IN (%s)",

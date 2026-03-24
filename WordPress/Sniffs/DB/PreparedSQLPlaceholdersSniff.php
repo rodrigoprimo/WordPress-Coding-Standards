@@ -14,6 +14,7 @@ use PHPCSUtils\Tokens\Collections;
 use PHPCSUtils\Utils\Arrays;
 use PHPCSUtils\Utils\PassedParameters;
 use PHPCSUtils\Utils\TextStrings;
+use WordPressCS\WordPress\Helpers\ContextHelper;
 use WordPressCS\WordPress\Helpers\MinimumWPVersionTrait;
 use WordPressCS\WordPress\Helpers\WPDBTrait;
 use WordPressCS\WordPress\Sniff;
@@ -226,7 +227,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				// Detect a specific pattern for variable replacements in combination with `IN`.
 				if ( \T_STRING === $this->tokens[ $i ]['code'] ) {
 
-					if ( 'sprintf' === strtolower( $this->tokens[ $i ]['content'] ) ) {
+					if ( ContextHelper::is_global_function_call( $this->phpcsFile, $i, 'sprintf' ) ) {
 						$sprintf_parameters = PassedParameters::getParameters( $this->phpcsFile, $i );
 
 						if ( ! empty( $sprintf_parameters ) ) {
@@ -265,7 +266,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 						}
 						unset( $sprintf_parameters, $valid_sprintf, $last_param );
 
-					} elseif ( 'implode' === strtolower( $this->tokens[ $i ]['content'] ) ) {
+					} elseif ( ContextHelper::is_global_function_call( $this->phpcsFile, $i, 'implode' ) ) {
 						$ignore_tokens = Tokens::$emptyTokens + array(
 							\T_STRING_CONCAT => \T_STRING_CONCAT,
 							\T_NS_SEPARATOR  => \T_NS_SEPARATOR,
@@ -679,9 +680,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 				$sprintf_param['end'],
 				true
 			);
-			if ( \T_STRING === $this->tokens[ $implode ]['code']
-				&& 'implode' === strtolower( $this->tokens[ $implode ]['content'] )
-			) {
+			if ( ContextHelper::is_global_function_call( $this->phpcsFile, $implode, 'implode' ) ) {
 				if ( $this->analyse_implode( $implode ) === true ) {
 					++$found;
 				}
@@ -737,9 +736,7 @@ final class PreparedSQLPlaceholdersSniff extends Sniff {
 			true
 		);
 
-		if ( \T_STRING !== $this->tokens[ $array_fill ]['code']
-			|| 'array_fill' !== strtolower( $this->tokens[ $array_fill ]['content'] )
-		) {
+		if ( ! ContextHelper::is_global_function_call( $this->phpcsFile, $array_fill, 'array_fill' ) ) {
 			return false;
 		}
 
