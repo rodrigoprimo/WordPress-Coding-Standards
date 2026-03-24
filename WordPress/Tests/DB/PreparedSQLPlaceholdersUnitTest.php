@@ -106,6 +106,19 @@ final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 
 			// Named parameter support.
 			418 => 1,
+
+			// Fully qualified \WPDB::prepare() call.
+			531 => 1,
+			532 => 1,
+
+			/**
+			 * False positives. See https://github.com/WordPress/WordPress-Coding-Standards/issues/2710 and
+			 * comment in the test case file.
+			 */
+			533 => 1,
+			534 => 1,
+			535 => 1,
+			536 => 1,
 		);
 	}
 
@@ -161,6 +174,38 @@ final class PreparedSQLPlaceholdersUnitTest extends AbstractSniffTestCase {
 			482 => 1,
 			490 => 1,
 			498 => 1,
+
+			// Namespaced sprintf/implode/array_fill calls.
+			542 => 1,
+			549 => 1,
+			556 => 1,
+			563 => 1,
+			575 => 1,
+			582 => 1,
+			589 => 1,
+			596 => 1,
+			608 => 1,
+			614 => 1,
+			620 => 1,
+			626 => 1,
+			637 => 1,
+			643 => 1,
+			648 => 1,
+			654 => 1,
+
+			// Method sprintf/implode/array_fill calls.
+			729 => 1,
+			736 => 1,
+			743 => 1,
+			752 => 1,
+			758 => 1,
+			764 => 1,
+			772 => 1,
+			779 => 1,
+			786 => 1,
+			795 => 1,
+			801 => 1,
+			807 => 1,
 		);
 	}
 }
