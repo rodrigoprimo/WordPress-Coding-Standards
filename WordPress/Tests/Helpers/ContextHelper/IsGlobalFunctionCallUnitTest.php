@@ -9,6 +9,7 @@
 
 namespace WordPressCS\WordPress\Tests\Helpers\ContextHelper;
 
+use PHPCSUtils\BackCompat\Helper;
 use PHPCSUtils\TestUtils\UtilityMethodTestCase;
 use WordPressCS\WordPress\Helpers\ContextHelper;
 
@@ -58,6 +59,9 @@ final class IsGlobalFunctionCallUnitTest extends UtilityMethodTestCase {
 	 * @return array<string, array<string, bool|int|string>>
 	 */
 	public static function dataIsGlobalFunctionCall() {
+		$phpcs_version = Helper::getVersion();
+		$is_phpcs_4    = version_compare( $phpcs_version, '3.99.99', '>' );
+
 		return array(
 			// Cases that should return true.
 			'lowercase_name' => array(
@@ -76,8 +80,8 @@ final class IsGlobalFunctionCallUnitTest extends UtilityMethodTestCase {
 			),
 			'fully_qualified_global' => array(
 				'marker'         => '/* testFullyQualifiedGlobal */',
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'valid_function',
+				'tokenType'      => ( true === $is_phpcs_4 ? \T_NAME_FULLY_QUALIFIED : \T_STRING ),
+				'tokenContent'   => ( true === $is_phpcs_4 ? '\valid_function' : 'valid_function' ),
 				'functionName'   => 'valid_function',
 				'expectedResult' => true,
 			),
@@ -124,29 +128,29 @@ final class IsGlobalFunctionCallUnitTest extends UtilityMethodTestCase {
 			),
 			'namespaced_function' => array(
 				'marker'         => '/* testNamespacedFunction */',
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'valid_function',
+				'tokenType'      => ( true === $is_phpcs_4 ? \T_NAME_QUALIFIED : \T_STRING ),
+				'tokenContent'   => ( true === $is_phpcs_4 ? 'MyNamespace\valid_function' : 'valid_function' ),
 				'functionName'   => 'valid_function',
 				'expectedResult' => false,
 			),
 			'fully_qualified_namespaced_function' => array(
 				'marker'         => '/* testFullyQualifiedNamespacedFunction */',
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'valid_function',
+				'tokenType'      => ( true === $is_phpcs_4 ? \T_NAME_FULLY_QUALIFIED : \T_STRING ),
+				'tokenContent'   => ( true === $is_phpcs_4 ? '\MyNamespace\valid_function' : 'valid_function' ),
 				'functionName'   => 'valid_function',
 				'expectedResult' => false,
 			),
 			'namespace_relative_function' => array(
 				'marker'         => '/* testNamespaceRelativeFunction */',
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'valid_function',
+				'tokenType'      => ( true === $is_phpcs_4 ? \T_NAME_RELATIVE : \T_STRING ),
+				'tokenContent'   => ( true === $is_phpcs_4 ? 'namespace\valid_function' : 'valid_function' ),
 				'functionName'   => 'valid_function',
 				'expectedResult' => false,
 			),
 			'namespace_relative_sub_function' => array(
 				'marker'         => '/* testNamespaceRelativeSubFunction */',
-				'tokenType'      => \T_STRING,
-				'tokenContent'   => 'valid_function',
+				'tokenType'      => ( true === $is_phpcs_4 ? \T_NAME_RELATIVE : \T_STRING ),
+				'tokenContent'   => ( true === $is_phpcs_4 ? 'namespace\Sub\valid_function' : 'valid_function' ),
 				'functionName'   => 'valid_function',
 				'expectedResult' => false,
 			),
