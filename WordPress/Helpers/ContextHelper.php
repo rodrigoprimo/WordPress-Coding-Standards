@@ -201,11 +201,19 @@ final class ContextHelper {
 			return false;
 		}
 
-		if ( \T_STRING !== $tokens[ $stackPtr ]['code'] ) {
+		if ( \T_STRING !== $tokens[ $stackPtr ]['code']
+			&& \T_NAME_FULLY_QUALIFIED !== $tokens[ $stackPtr ]['code']
+		) {
 			return false;
 		}
 
-		if ( strtolower( $tokens[ $stackPtr ]['content'] ) !== strtolower( $function_name ) ) {
+		$content_lc = strtolower( $tokens[ $stackPtr ]['content'] );
+
+		if ( \T_NAME_FULLY_QUALIFIED === $tokens[ $stackPtr ]['code'] ) {
+			$content_lc = \ltrim( $content_lc, '\\' );
+		}
+
+		if ( $content_lc !== $function_name ) {
 			return false;
 		}
 
