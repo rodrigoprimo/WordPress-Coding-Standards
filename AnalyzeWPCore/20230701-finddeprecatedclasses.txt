@@ -1,165 +1,129 @@
-PHP 8.5.0 (cli) (built: Nov 19 2025 09:58:52) (ZTS Visual C++ 2022 x64)
-Copyright (c) The PHP Group
-Zend Engine v4.5.0, Copyright (c) Zend Technologies
-    with Zend OPcache v8.5.0, Copyright (c), by Zend Technologies
 
-PHP_CodeSniffer version 3.13.6 (stable) by Squiz and PHPCSStandards
-
-............................................................   60 / 1579 (4%)
-.........................................E..................  120 / 1579 (8%)
-............................................................  180 / 1579 (11%)
-............................................................  240 / 1579 (15%)
-............................................................  300 / 1579 (19%)
-............................................................  360 / 1579 (23%)
-............................................................  420 / 1579 (27%)
-............................................................  480 / 1579 (30%)
-............................................................  540 / 1579 (34%)
-............................................................  600 / 1579 (38%)
-............................................................  660 / 1579 (42%)
-............................................................  720 / 1579 (46%)
-............................................................  780 / 1579 (49%)
-............................................................  840 / 1579 (53%)
-............................................................  900 / 1579 (57%)
-............................................................  960 / 1579 (61%)
-.............................E.............................. 1020 / 1579 (65%)
-............................E......E........................ 1080 / 1579 (68%)
-............................................................ 1140 / 1579 (72%)
-..........EE................................................ 1200 / 1579 (76%)
-............................................................ 1260 / 1579 (80%)
-............................................................ 1320 / 1579 (84%)
-............................................................ 1380 / 1579 (87%)
-............................................................ 1440 / 1579 (91%)
-............................................................ 1500 / 1579 (95%)
-............................................................ 1560 / 1579 (99%)
-...................                                          1579 / 1579 (100%)
-
-
-
-FILE: D:\000_GitHub\WP_test_suite\src\wp-admin\includes\deprecated.php
--------------------------------------------------------------------------------------------------------------------------------------
-FOUND 3 ERRORS AFFECTING 3 LINES
--------------------------------------------------------------------------------------------------------------------------------------
-LINE  337: ERROR Class WP_User_Search is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
--------------------------------------------------------------------------------------------------------------------------------------
-    335:   *
-    336:   * @since 2.1.0
->>  337:   * @deprecated 3.1.0 Use WP_User_Query
-    338:   */
-    339:  class WP_User_Search {
--------------------------------------------------------------------------------------------------------------------------------------
-LINE 1533: ERROR Class WP_Privacy_Data_Export_Requests_Table is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
--------------------------------------------------------------------------------------------------------------------------------------
-   1531:   *
-   1532:   * @since 4.9.6
->> 1533:   * @deprecated 5.3.0
-   1534:   */
-   1535:  class WP_Privacy_Data_Export_Requests_Table extends WP_Privacy_Data_Export_Requests_List_Table {
--------------------------------------------------------------------------------------------------------------------------------------
-LINE 1551: ERROR Class WP_Privacy_Data_Removal_Requests_Table is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
--------------------------------------------------------------------------------------------------------------------------------------
-   1549:   *
-   1550:   * @since 4.9.6
->> 1551:   * @deprecated 5.3.0
-   1552:   */
-   1553:  class WP_Privacy_Data_Removal_Requests_Table extends WP_Privacy_Data_Removal_Requests_List_Table {
--------------------------------------------------------------------------------------------------------------------------------------
-
-FILE: D:\000_GitHub\WP_test_suite\src\wp-includes\class-json.php
------------------------------------------------------------------------------------------------------------------
-FOUND 2 ERRORS AFFECTING 2 LINES
------------------------------------------------------------------------------------------------------------------
-LINE 161: ERROR Class Services_JSON is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
------------------------------------------------------------------------------------------------------------------
-   159:      function __construct( $use = 0 )
-   160:      {
->> 161:          _deprecated_function( __METHOD__, '5.3.0', 'The PHP native JSON extension' );
-   162:  
-   163:          $this->use = $use;
------------------------------------------------------------------------------------------------------------------
-LINE 992: ERROR Class Services_JSON_Error is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
------------------------------------------------------------------------------------------------------------------
-   990:                                       $mode = null, $options = null, $userinfo = null)
-   991:          {
->> 992:              _deprecated_function( __METHOD__, '5.3.0', 'The PHP native JSON extension' );
-   993:  
-   994:              parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
------------------------------------------------------------------------------------------------------------------
-
-FILE: D:\000_GitHub\WP_test_suite\src\wp-includes\class-wp-http-curl.php
+FILE: src/wp-includes/class-wp-http-curl.php
 ---------------------------------------------------------------------------------------------------------
 FOUND 1 ERROR AFFECTING 1 LINE
 ---------------------------------------------------------------------------------------------------------
 LINE 18: ERROR Class WP_Http_Curl is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
 ---------------------------------------------------------------------------------------------------------
-   16:   *
-   17:   * @since 2.7.0
->> 18:   * @deprecated 6.4.0 Use WP_Http
-   19:   * @see WP_Http
-   20:   */
+   16:  ·*
+   17:  ·*·@since·2.7.0
+>> 18:  ·*·@deprecated·6.4.0·Use·WP_Http
+   19:  ·*·@see·WP_Http
+   20:  ·*/
 ---------------------------------------------------------------------------------------------------------
 
-FILE: D:\000_GitHub\WP_test_suite\src\wp-includes\class-wp-http-streams.php
----------------------------------------------------------------------------------------------------------------
+FILE: src/wp-includes/class-json.php
+-----------------------------------------------------------------------------------------------------------------
 FOUND 2 ERRORS AFFECTING 2 LINES
----------------------------------------------------------------------------------------------------------------
-LINE  15: ERROR Class WP_Http_Streams is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
----------------------------------------------------------------------------------------------------------------
-    13:   * @since 2.7.0
-    14:   * @since 3.7.0 Combined with the fsockopen transport and switched to `stream_socket_client()`.
->>  15:   * @deprecated 6.4.0 Use WP_Http
-    16:   * @see WP_Http
-    17:   */
----------------------------------------------------------------------------------------------------------------
-LINE 532: ERROR Class WP_HTTP_Fsockopen is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
----------------------------------------------------------------------------------------------------------------
-   530:   *
-   531:   * @since 2.7.0
->> 532:   * @deprecated 3.7.0 Please use WP_HTTP::request() directly
-   533:   */
-   534:  class WP_HTTP_Fsockopen extends WP_Http_Streams {
----------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
+LINE 161: ERROR Class Services_JSON is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+-----------------------------------------------------------------------------------------------------------------
+   159:  ····function·__construct(·$use·=·0·)
+   160:  ····{
+>> 161:  ········_deprecated_function(·__METHOD__,·'5.3.0',·'The·PHP·native·JSON·extension'·);
+   162:  
+   163:  ········$this->use·=·$use;
+-----------------------------------------------------------------------------------------------------------------
+LINE 992: ERROR Class Services_JSON_Error is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+-----------------------------------------------------------------------------------------------------------------
+   990:  ·····································$mode·=·null,·$options·=·null,·$userinfo·=·null)
+   991:  ········{
+>> 992:  ············_deprecated_function(·__METHOD__,·'5.3.0',·'The·PHP·native·JSON·extension'·);
+   993:  
+   994:  ············parent::PEAR_Error($message,·$code,·$mode,·$options,·$userinfo);
+-----------------------------------------------------------------------------------------------------------------
 
-FILE: D:\000_GitHub\WP_test_suite\src\wp-includes\customize\class-wp-customize-new-menu-control.php
+FILE: src/wp-includes/customize/class-wp-customize-new-menu-control.php
 --------------------------------------------------------------------------------------------------------------------------
 FOUND 1 ERROR AFFECTING 1 LINE
 --------------------------------------------------------------------------------------------------------------------------
 LINE 17: ERROR Class WP_Customize_New_Menu_Control is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
 --------------------------------------------------------------------------------------------------------------------------
-   15:   *
-   16:   * @since 4.3.0
->> 17:   * @deprecated 4.9.0 This class is no longer used as of the menu creation UX introduced in #40104.
-   18:   *
-   19:   * @see WP_Customize_Control
+   15:  ·*
+   16:  ·*·@since·4.3.0
+>> 17:  ·*·@deprecated·4.9.0·This·class·is·no·longer·used·as·of·the·menu·creation·UX·introduced·in·#40104.
+   18:  ·*
+   19:  ·*·@see·WP_Customize_Control
 --------------------------------------------------------------------------------------------------------------------------
 
-FILE: D:\000_GitHub\WP_test_suite\src\wp-includes\customize\class-wp-customize-new-menu-section.php
+FILE: src/wp-includes/customize/class-wp-customize-new-menu-section.php
 --------------------------------------------------------------------------------------------------------------------------
 FOUND 1 ERROR AFFECTING 1 LINE
 --------------------------------------------------------------------------------------------------------------------------
 LINE 17: ERROR Class WP_Customize_New_Menu_Section is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
 --------------------------------------------------------------------------------------------------------------------------
-   15:   *
-   16:   * @since 4.3.0
->> 17:   * @deprecated 4.9.0 This class is no longer used as of the menu creation UX introduced in #40104.
-   18:   *
-   19:   * @see WP_Customize_Section
+   15:  ·*
+   16:  ·*·@since·4.3.0
+>> 17:  ·*·@deprecated·4.9.0·This·class·is·no·longer·used·as·of·the·menu·creation·UX·introduced·in·#40104.
+   18:  ·*
+   19:  ·*·@see·WP_Customize_Section
 --------------------------------------------------------------------------------------------------------------------------
-Time: 32.84 secs; Memory: 96MB
+
+FILE: src/wp-includes/class-wp-http-streams.php
+---------------------------------------------------------------------------------------------------------------
+FOUND 2 ERRORS AFFECTING 2 LINES
+---------------------------------------------------------------------------------------------------------------
+LINE  15: ERROR Class WP_Http_Streams is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+---------------------------------------------------------------------------------------------------------------
+    13:  ·*·@since·2.7.0
+    14:  ·*·@since·3.7.0·Combined·with·the·fsockopen·transport·and·switched·to·`stream_socket_client()`.
+>>  15:  ·*·@deprecated·6.4.0·Use·WP_Http
+    16:  ·*·@see·WP_Http
+    17:  ·*/
+---------------------------------------------------------------------------------------------------------------
+LINE 532: ERROR Class WP_HTTP_Fsockopen is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+---------------------------------------------------------------------------------------------------------------
+   530:  ·*
+   531:  ·*·@since·2.7.0
+>> 532:  ·*·@deprecated·3.7.0·Please·use·WP_HTTP::request()·directly
+   533:  ·*/
+   534:  class·WP_HTTP_Fsockopen·extends·WP_Http_Streams·{
+---------------------------------------------------------------------------------------------------------------
+
+FILE: src/wp-admin/includes/deprecated.php
+-------------------------------------------------------------------------------------------------------------------------------------
+FOUND 3 ERRORS AFFECTING 3 LINES
+-------------------------------------------------------------------------------------------------------------------------------------
+LINE  337: ERROR Class WP_User_Search is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+-------------------------------------------------------------------------------------------------------------------------------------
+    335:  ·*
+    336:  ·*·@since·2.1.0
+>>  337:  ·*·@deprecated·3.1.0·Use·WP_User_Query
+    338:  ·*/
+    339:  class·WP_User_Search·{
+-------------------------------------------------------------------------------------------------------------------------------------
+LINE 1533: ERROR Class WP_Privacy_Data_Export_Requests_Table is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+-------------------------------------------------------------------------------------------------------------------------------------
+   1531:  ·*
+   1532:  ·*·@since·4.9.6
+>> 1533:  ·*·@deprecated·5.3.0
+   1534:  ·*/
+   1535:  class·WP_Privacy_Data_Export_Requests_Table·extends·WP_Privacy_Data_Export_Requests_List_Table·{
+-------------------------------------------------------------------------------------------------------------------------------------
+LINE 1551: ERROR Class WP_Privacy_Data_Removal_Requests_Table is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+-------------------------------------------------------------------------------------------------------------------------------------
+   1549:  ·*
+   1550:  ·*·@since·4.9.6
+>> 1551:  ·*·@deprecated·5.3.0
+   1552:  ·*/
+   1553:  class·WP_Privacy_Data_Removal_Requests_Table·extends·WP_Privacy_Data_Removal_Requests_List_Table·{
+-------------------------------------------------------------------------------------------------------------------------------------
+Time: 1 mins, 1.25 secs; Memory: 78MB
 
 
 PHP CODE SNIFFER REPORT SUMMARY
-------------------------------------------------------------------------------------------------------------------
-FILE                                                                                              ERRORS  WARNINGS
-------------------------------------------------------------------------------------------------------------------
-D:\000_GitHub\WP_test_suite\src\wp-admin\includes\deprecated.php                                  3       0
-D:\000_GitHub\WP_test_suite\src\wp-includes\class-json.php                                        2       0
-D:\000_GitHub\WP_test_suite\src\wp-includes\class-wp-http-curl.php                                1       0
-D:\000_GitHub\WP_test_suite\src\wp-includes\class-wp-http-streams.php                             2       0
-D:\000_GitHub\WP_test_suite\src\wp-includes\customize\class-wp-customize-new-menu-control.php     1       0
-D:\000_GitHub\WP_test_suite\src\wp-includes\customize\class-wp-customize-new-menu-section.php     1       0
-------------------------------------------------------------------------------------------------------------------
-A TOTAL OF 10 ERRORS AND 0 WARNINGS WERE FOUND IN 1579 FILES
-------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+FILE                                                                  ERRORS  WARNINGS
+--------------------------------------------------------------------------------------
+src/wp-admin/includes/deprecated.php                                  3       0
+src/wp-includes/class-json.php                                        2       0
+src/wp-includes/class-wp-http-curl.php                                1       0
+src/wp-includes/class-wp-http-streams.php                             2       0
+src/wp-includes/customize/class-wp-customize-new-menu-control.php     1       0
+src/wp-includes/customize/class-wp-customize-new-menu-section.php     1       0
+--------------------------------------------------------------------------------------
+A TOTAL OF 10 ERRORS AND 0 WARNINGS WERE FOUND IN 1580 FILES
+--------------------------------------------------------------------------------------
 
 
 PHP CODE SNIFFER VIOLATION SOURCE SUMMARY
@@ -170,7 +134,4 @@ AnalyzeWPCore.WP.FindDeprecatedClasses.Found                     10
 ----------------------------------------------------------------------
 A TOTAL OF 10 SNIFF VIOLATIONS WERE FOUND IN 1 SOURCE
 ----------------------------------------------------------------------
-
-
-Exit code is 1
 
