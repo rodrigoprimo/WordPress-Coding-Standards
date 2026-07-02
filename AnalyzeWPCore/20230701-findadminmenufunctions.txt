@@ -22,5 +22,5 @@ Admin Menu adding functions:
 	total                                     => 16 (100.00%)
 
 ----------------------------------------------------------------------
-Time: 1 mins, 2.36 secs; Memory: 74MB
+Time: 1 mins, 10.91 secs; Memory: 76MB
 

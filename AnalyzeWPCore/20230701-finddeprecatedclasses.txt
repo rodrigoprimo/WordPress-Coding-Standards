@@ -21,7 +21,7 @@ LINE 161: ERROR Class Services_JSON is deprecated since ... (AnalyzeWPCore.WP.Fi
    159:  ····function·__construct(·$use·=·0·)
    160:  ····{
 >> 161:  ········_deprecated_function(·__METHOD__,·'5.3.0',·'The·PHP·native·JSON·extension'·);
-   162:  
+   162:
    163:  ········$this->use·=·$use;
 -----------------------------------------------------------------------------------------------------------------
 LINE 992: ERROR Class Services_JSON_Error is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
@@ -29,7 +29,7 @@ LINE 992: ERROR Class Services_JSON_Error is deprecated since ... (AnalyzeWPCore
    990:  ·····································$mode·=·null,·$options·=·null,·$userinfo·=·null)
    991:  ········{
 >> 992:  ············_deprecated_function(·__METHOD__,·'5.3.0',·'The·PHP·native·JSON·extension'·);
-   993:  
+   993:
    994:  ············parent::PEAR_Error($message,·$code,·$mode,·$options,·$userinfo);
 -----------------------------------------------------------------------------------------------------------------
 
@@ -71,13 +71,13 @@ LINE  15: ERROR Class WP_Http_Streams is deprecated since ... (AnalyzeWPCore.WP.
     16:  ·*·@see·WP_Http
     17:  ·*/
 ---------------------------------------------------------------------------------------------------------------
-LINE 532: ERROR Class WP_HTTP_Fsockopen is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
+LINE 528: ERROR Class WP_HTTP_Fsockopen is deprecated since ... (AnalyzeWPCore.WP.FindDeprecatedClasses.Found)
 ---------------------------------------------------------------------------------------------------------------
-   530:  ·*
-   531:  ·*·@since·2.7.0
->> 532:  ·*·@deprecated·3.7.0·Please·use·WP_HTTP::request()·directly
-   533:  ·*/
-   534:  class·WP_HTTP_Fsockopen·extends·WP_Http_Streams·{
+   526:  ·*
+   527:  ·*·@since·2.7.0
+>> 528:  ·*·@deprecated·3.7.0·Please·use·WP_HTTP::request()·directly
+   529:  ·*/
+   530:  class·WP_HTTP_Fsockopen·extends·WP_Http_Streams·{
 ---------------------------------------------------------------------------------------------------------------
 
 FILE: src/wp-admin/includes/deprecated.php
@@ -108,7 +108,7 @@ LINE 1551: ERROR Class WP_Privacy_Data_Removal_Requests_Table is deprecated sinc
    1552:  ·*/
    1553:  class·WP_Privacy_Data_Removal_Requests_Table·extends·WP_Privacy_Data_Removal_Requests_List_Table·{
 -------------------------------------------------------------------------------------------------------------------------------------
-Time: 1 mins, 1.25 secs; Memory: 78MB
+Time: 1 mins, 5.55 secs; Memory: 80MB
 
 
 PHP CODE SNIFFER REPORT SUMMARY
@@ -122,7 +122,7 @@ src/wp-includes/class-wp-http-streams.php                             2       0
 src/wp-includes/customize/class-wp-customize-new-menu-control.php     1       0
 src/wp-includes/customize/class-wp-customize-new-menu-section.php     1       0
 --------------------------------------------------------------------------------------
-A TOTAL OF 10 ERRORS AND 0 WARNINGS WERE FOUND IN 1580 FILES
+A TOTAL OF 10 ERRORS AND 0 WARNINGS WERE FOUND IN 1757 FILES
 --------------------------------------------------------------------------------------
 
 

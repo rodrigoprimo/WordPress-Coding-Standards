@@ -22,5 +22,5 @@ Reserved post types:
 	total               => 16 (100.00%)
 
 ----------------------------------------------------------------------
-Time: 1 mins, 2.57 secs; Memory: 108MB
+Time: 1 mins, 5.19 secs; Memory: 110MB
 

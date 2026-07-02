@@ -17,5 +17,5 @@ Pluggable classes found:
 	total                            => 11 (100.00%)
 
 ----------------------------------------------------------------------
-Time: 1 mins, 7.24 secs; Memory: 78MB
+Time: 1 mins, 9.47 secs; Memory: 80MB
 

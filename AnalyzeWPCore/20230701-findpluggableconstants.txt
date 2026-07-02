@@ -44,5 +44,5 @@ Pluggable constant found:
 	total                => 38 (100.00%)
 
 ----------------------------------------------------------------------
-Time: 1 mins, 3.82 secs; Memory: 78MB
+Time: 1 mins, 7.66 secs; Memory: 80MB
 

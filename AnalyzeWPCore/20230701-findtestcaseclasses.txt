@@ -16,5 +16,5 @@ Test Case classes :
 	total                                      => 10 (100.00%)
 
 ----------------------------------------------------------------------
-Time: 1.07 secs; Memory: 18MB
+Time: 1.21 secs; Memory: 18MB
 
