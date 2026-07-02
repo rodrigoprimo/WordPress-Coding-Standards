@@ -41,6 +41,7 @@
 		<exclude-pattern>/src/wp-includes/class-requests\.php</exclude-pattern>
 		<exclude-pattern>/src/wp-includes/Requests/*</exclude-pattern>
 		<exclude-pattern>/src/wp-includes/SimplePie/*</exclude-pattern>
+		<exclude-pattern>/src/wp-includes/php-ai-client/*</exclude-pattern>
 	</rule>
 
 	<rule ref="AnalyzeWPCore.WP.FindDeprecatedFunctions">
@@ -51,6 +52,7 @@
 		<exclude-pattern>/src/wp-includes/class-requests\.php</exclude-pattern>
 		<exclude-pattern>/src/wp-includes/Requests/*</exclude-pattern>
 		<exclude-pattern>/src/wp-includes/SimplePie/*</exclude-pattern>
+		<exclude-pattern>/src/wp-includes/php-ai-client/*</exclude-pattern>
 	</rule>
 
 	<rule ref="AnalyzeWPCore.WP.FindDeprecatedParameters">
@@ -61,6 +63,7 @@
 		<exclude-pattern>/src/wp-includes/class-requests\.php</exclude-pattern>
 		<exclude-pattern>/src/wp-includes/Requests/*</exclude-pattern>
 		<exclude-pattern>/src/wp-includes/SimplePie/*</exclude-pattern>
+		<exclude-pattern>/src/wp-includes/php-ai-client/*</exclude-pattern>
 	</rule>
 
 	<rule ref="AnalyzeWPCore.WP.FindPluggableClasses">
