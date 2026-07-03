@@ -9,11 +9,16 @@
 	<!-- Strip the filepaths down to the relevant bit. -->
 	<arg name="basepath" value="./"/>
 
-	<!-- Check up to 20 files simultaneously. -->
-	<arg name="parallel" value="20"/>
+	<!-- Disable parallel processing so the scanned files are always reported in the same
+		 order, which keeps release-to-release diffs of the generated reports clean. -->
+	<arg name="parallel" value="1"/>
 
-	<!-- Show sniff codes in all reports. -->
-	<arg value="ps"/>
+	<!-- Fixed report width so long messages don't wrap and the reports are reproducible
+		 (PHPCS otherwise auto-detects the terminal width, which varies between runs). -->
+	<arg name="report-width" value="200"/>
+
+	<!-- Run quietly (drop the PHPCS header and progress bar) and show sniff codes in all reports. -->
+	<arg value="qs"/>
 
 	<arg name="report" value="code,summary,source,info"/>
 
