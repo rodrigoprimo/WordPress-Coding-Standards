@@ -180,6 +180,47 @@ final class ContextHelper {
 	}
 
 	/**
+	 * Check if a token is a call to a global function with the specified name.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param \PHP_CodeSniffer\Files\File $phpcsFile     The file being scanned.
+	 * @param int                         $stackPtr      The index of the token in the stack.
+	 * @param string                      $function_name The function name to check for (case-insensitive).
+	 *
+	 * @return bool True if the token represents a call to the global function, false otherwise.
+	 */
+	public static function is_global_function_call( File $phpcsFile, $stackPtr, $function_name ) {
+		$tokens = $phpcsFile->getTokens();
+		if ( isset( $tokens[ $stackPtr ] ) === false ) {
+			return false;
+		}
+
+		if ( \T_STRING !== $tokens[ $stackPtr ]['code'] ) {
+			return false;
+		}
+
+		if ( strtolower( $tokens[ $stackPtr ]['content'] ) !== strtolower( $function_name ) ) {
+			return false;
+		}
+
+		$next = $phpcsFile->findNext( Tokens::$emptyTokens, ( $stackPtr + 1 ), null, true );
+		if ( false === $next || \T_OPEN_PARENTHESIS !== $tokens[ $next ]['code'] ) {
+			return false;
+		}
+
+		if ( self::has_object_operator_before( $phpcsFile, $stackPtr ) === true ) {
+			return false;
+		}
+
+		if ( self::is_token_namespaced( $phpcsFile, $stackPtr ) === true ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Check if a token is (part of) a parameter for a function call to a select list of functions.
 	 *
 	 * This is useful, for instance, when trying to determine the context a variable is used in.
