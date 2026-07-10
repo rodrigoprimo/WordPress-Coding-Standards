@@ -150,6 +150,29 @@ final class IsGlobalFunctionCallUnitTest extends UtilityMethodTestCase {
 				'functionName'   => 'valid_function',
 				'expectedResult' => false,
 			),
+
+			// Cases that should return false: not a function call.
+			'function_declaration' => array(
+				'marker'         => '/* testFunctionDeclaration */',
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'valid_function',
+				'functionName'   => 'valid_function',
+				'expectedResult' => false,
+			),
+			'function_declaration_by_reference' => array(
+				'marker'         => '/* testFunctionDeclarationByReference */',
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'valid_function',
+				'functionName'   => 'valid_function',
+				'expectedResult' => false,
+			),
+			'object_instantiation' => array(
+				'marker'         => '/* testObjectInstantiation */',
+				'tokenType'      => \T_STRING,
+				'tokenContent'   => 'valid_function',
+				'functionName'   => 'valid_function',
+				'expectedResult' => false,
+			),
 		);
 	}
 }

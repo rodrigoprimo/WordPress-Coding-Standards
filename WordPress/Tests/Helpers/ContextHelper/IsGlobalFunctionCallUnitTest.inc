@@ -43,3 +43,12 @@ namespace\valid_function( $param ); // The method should start recognizing this 
 
 /* testNamespaceRelativeSubFunction */
 namespace\Sub\valid_function( $param );
+
+/* testFunctionDeclaration */
+function valid_function() {}
+
+/* testFunctionDeclarationByReference */
+function &valid_function() {}
+
+/* testObjectInstantiation */
+new valid_function();

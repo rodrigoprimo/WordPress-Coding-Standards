@@ -182,6 +182,11 @@ final class ContextHelper {
 	/**
 	 * Check if a token is a call to a global function with the specified name.
 	 *
+	 * {@internal This method relies on `has_object_operator_before()` and `is_token_namespaced()` and shares
+	 * their limitations. Most notably, a function imported via a `use function` statement may be mistaken for a
+	 * global function and a `namespace\`-relative call will not be recognized as global because the namespace
+	 * cannot be resolved.}
+	 *
 	 * @since 3.4.0
 	 *
 	 * @param \PHP_CodeSniffer\Files\File $phpcsFile     The file being scanned.
@@ -214,6 +219,14 @@ final class ContextHelper {
 		}
 
 		if ( self::is_token_namespaced( $phpcsFile, $stackPtr ) === true ) {
+			return false;
+		}
+
+		// Bail on function declarations and object instantiations, which are not function calls.
+		$search                   = Tokens::$emptyTokens;
+		$search[ \T_BITWISE_AND ] = \T_BITWISE_AND;
+		$prev                     = $phpcsFile->findPrevious( $search, ( $stackPtr - 1 ), null, true );
+		if ( \T_FUNCTION === $tokens[ $prev ]['code'] || \T_NEW === $tokens[ $prev ]['code'] ) {
 			return false;
 		}
 
